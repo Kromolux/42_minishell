@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/03/25 18:54:34 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/03/26 19:26:23 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,12 @@ SRC			:=	ft_minishell.c \
 				ft_echo.c \
 				ft_utils0.c \
 				ft_error.c \
-				ft_env.c
+				ft_env.c \
+				ft_parser0.c \
+				ft_parser1.c \
+				ft_commands0.c \
+				ft_export.c \
+				ft_unset.c
 
 OBJ			:=	$(SRC:%.c=%.o)
 

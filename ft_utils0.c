@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:17:56 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/25 20:42:54 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/26 19:30:38 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,47 +19,6 @@ size_t	ft_strlen(const char *s)
 	i = 0;
 	while (s[i])
 		i++;
-	return (i);
-}
-
-char	*ft_skip_whitespaces(const char *s)
-{
-	while (*s != '\0' && (*s == ' ' || (*s >= '\t' && *s <= '\r')))
-		s++;
-	return ((char *)s);
-}
-
-int	ft_end_of_token(char *s)
-{
-	int	i;
-	int	s_quote;
-	int	d_quote;
-	int	found_quote;
-
-	found_quote = 0;
-	s_quote = 0;
-	d_quote = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '\"')
-		{
-			if (d_quote == 0)
-				d_quote = 1;
-			else
-				d_quote = 0;
-		}
-		else if (s[i] == '\'')
-		{
-			if (s_quote == 0)
-				s_quote = 1;
-			else
-				s_quote = 0;
-		}
-		if (d_quote == 0 && s_quote == 0 && (s[i] == ' ' || (s[i] >= '\t' && s[i] <= '\r')))
-			break;
-		i++;
-	}
 	return (i);
 }
 
@@ -199,4 +158,33 @@ size_t	ft_count_of_in_str(const char *s, const char c)
 		s++;
 	}
 	return (count);
+}
+
+char	*ft_char_in_str(const char *s, const char c)
+{
+	while (*s)
+	{
+		if (*s == c)
+			return ((char *)s);
+		s++;
+	}
+	return (NULL);
+}
+
+char	*ft_realloc(char *s1, char *s2, int free_s1, int free_s2)
+{
+	ssize_t		s1_len;
+	char		*output;
+
+	s1_len = ft_strlen(s1);
+	output = (char *)malloc(s1_len + ft_strlen(s2) + 1);
+	if (!output)
+		return (NULL);
+	ft_copy(output, s1, 0);
+	ft_copy(&output[s1_len], s2, 0);
+	if (free_s1)
+		free(s1);
+	if (free_s2)
+		free(s2);
+	return (output);
 }
