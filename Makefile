@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/03/26 19:26:23 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/03/27 11:28:01 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,15 +16,20 @@ CC			:=	gcc
 HEADERFILE	:=	minishell.h
 
 SRC			:=	ft_minishell.c \
-				ft_echo.c \
+				ft_error0.c \
 				ft_utils0.c \
-				ft_error.c \
-				ft_env.c \
+				ft_utils1.c \
+				ft_utils2.c \
 				ft_parser0.c \
 				ft_parser1.c \
 				ft_commands0.c \
+				ft_env0.c \
+				ft_env1.c \
 				ft_export.c \
-				ft_unset.c
+				ft_unset.c \
+				ft_pwd.c \
+				ft_echo.c
+				
 
 OBJ			:=	$(SRC:%.c=%.o)
 

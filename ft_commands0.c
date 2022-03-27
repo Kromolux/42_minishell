@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/26 18:38:39 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/27 20:31:18 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,31 @@ t_command *ft_create_cmd(char *input)
 	return (output);
 }
 */
+
+int	ft_build_in_exe(t_data *data)
+{
+	if (ft_strcmp(data->c_line->argv[0], "exit"))
+		return (1);
+	else if (ft_strcmp(data->c_line->argv[0], "pwd"))
+		ft_pwd(data);
+	else if (ft_strcmp(data->c_line->argv[0], "env"))
+		ft_env(data);
+	else if (ft_strcmp(data->c_line->argv[0], "export"))
+		ft_export(data);
+	else if (ft_strcmp(data->c_line->argv[0], "unset"))
+		ft_unset(data);
+	else if (ft_strcmp(data->c_line->argv[0], "cd"))
+		;
+	else if (ft_strcmp(data->c_line->argv[0], "echo"))
+		ft_echo(data->c_line);
+	else
+	{
+		data->errnum = 127;
+		ft_print_error(data);
+	}
+	return (0);
+}
+
 void	ft_print_commands(t_command *commands)
 {
 	int	i;
@@ -88,7 +113,7 @@ void	ft_print_commands(t_command *commands)
 		i = 0;
 		while (commands->argv[i])
 		{
-			printf("argc=%i %s\n", i, commands->argv[i]);
+			//printf("argc=%i [%s]\n", i, commands->argv[i]);
 			i++;
 		}
 		commands = commands->next;

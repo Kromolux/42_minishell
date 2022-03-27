@@ -6,13 +6,13 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/26 19:29:34 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/27 14:35:25 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_inside_d_quote(t_parse *check, char *input, t_envp *envp)
+void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 {
 	if (check->i > 0)
 	{
@@ -24,7 +24,7 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_envp *envp)
 	while (input[check->i])
 	{
 		if (input[check->i] == '$')
-			ft_found_dollar(check, input, envp);
+			ft_found_dollar(check, input, data);
 		if (input[check->i] == '\"')
 		{
 			check->string[check->i_string] = ft_get_substring(input, check->start, check->i - check->start);
@@ -56,7 +56,7 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 	}
 }
 
-void	ft_found_dollar(t_parse *check, char *input, t_envp *envp)
+void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 {
 	char	*tmp;
 	
@@ -64,12 +64,16 @@ void	ft_found_dollar(t_parse *check, char *input, t_envp *envp)
 		check->i - check->start);
 	check->i_string++;
 	tmp = ft_get_var(&input[check->i + 1]);
-	check->string[check->i_string] = ft_string_dup(ft_getenv(tmp, envp));
+	if (ft_strncmp(tmp, "?", 1) == 0)
+		check->string[check->i_string] = ft_int_to_string(data->errnum);
+	else
+		check->string[check->i_string] = ft_string_dup(ft_getenv(tmp, data->envp));
 	check->i_string++;
-	check->i += ft_strlen(tmp) + 1;
-	check->start = check->i;
+	check->i += ft_strlen(tmp);
+	check->start = check->i + 1;
 	free(tmp);
 }
+
 char	*ft_prepare_output(t_parse *check)
 {
 	char	*output;
