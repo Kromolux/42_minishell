@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:20:39 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 20:43:30 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/28 10:05:22 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,8 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	i = 0;
 	while (i < n)
 	{
-		if (s1[i] < s2[i])
-			return ((unsigned char) s1[i] - s2[i]);
-		else if (s1[i] > s2[i])
-			return ((unsigned char) s1[i] - s2[i]);
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
 		else if (s1[i] == '\0' || s2[i] == '\0')
 			return (0);
 		i++;

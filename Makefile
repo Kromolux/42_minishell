@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/03/27 11:28:01 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/03/28 21:16:49 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,11 +25,14 @@ SRC			:=	ft_minishell.c \
 				ft_commands0.c \
 				ft_env0.c \
 				ft_env1.c \
-				ft_export.c \
+				ft_export0.c \
+				ft_export1.c \
 				ft_unset.c \
 				ft_pwd.c \
-				ft_echo.c
-				
+				ft_echo.c \
+				ft_cd.c \
+				ft_executable.c \
+				ft_split.c
 
 OBJ			:=	$(SRC:%.c=%.o)
 

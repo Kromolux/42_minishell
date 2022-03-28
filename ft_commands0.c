@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 20:31:18 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/28 21:03:08 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,28 +79,30 @@ t_command *ft_create_cmd(char *input)
 }
 */
 
-int	ft_build_in_exe(t_data *data)
+int	ft_build_in_exe(t_command *cmd, t_data *data)
 {
-	if (ft_strcmp(data->c_line->argv[0], "exit"))
+	if (ft_strcmp(cmd->argv[0], "exit"))
 		return (1);
-	else if (ft_strcmp(data->c_line->argv[0], "pwd"))
-		ft_pwd(data);
-	else if (ft_strcmp(data->c_line->argv[0], "env"))
-		ft_env(data);
-	else if (ft_strcmp(data->c_line->argv[0], "export"))
-		ft_export(data);
-	else if (ft_strcmp(data->c_line->argv[0], "unset"))
-		ft_unset(data);
-	else if (ft_strcmp(data->c_line->argv[0], "cd"))
-		;
-	else if (ft_strcmp(data->c_line->argv[0], "echo"))
-		ft_echo(data->c_line);
+	else if (ft_strcmp(cmd->argv[0], "pwd"))
+		return (ft_pwd(cmd));
+	else if (ft_strcmp(cmd->argv[0], "env"))
+		return (ft_env(data, cmd));
+	else if (ft_strcmp(cmd->argv[0], "export"))
+		return (ft_export(data, cmd));
+	else if (ft_strcmp(cmd->argv[0], "unset"))
+		return (ft_unset(data, cmd));
+	else if (ft_strcmp(cmd->argv[0], "cd"))
+		return (ft_cd(data, cmd));
+	else if (ft_strcmp(cmd->argv[0], "echo"))
+		return (ft_echo(cmd));
+	/*
 	else
 	{
 		data->errnum = 127;
 		ft_print_error(data);
 	}
-	return (0);
+	*/
+	return (-1);
 }
 
 void	ft_print_commands(t_command *commands)
@@ -113,7 +115,7 @@ void	ft_print_commands(t_command *commands)
 		i = 0;
 		while (commands->argv[i])
 		{
-			//printf("argc=%i [%s]\n", i, commands->argv[i]);
+			printf("argc=%i [%s]\n", i, commands->argv[i]);
 			i++;
 		}
 		commands = commands->next;

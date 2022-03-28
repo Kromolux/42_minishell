@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 18:41:59 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 20:46:34 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/28 09:47:43 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_envp	*ft_lstnew(char *content)
 	new_element = (t_envp *) malloc(sizeof(t_envp));
 	if (!new_element)
 		return (NULL);
-	new_element->var = ft_get_substring(content, 0, ft_strlen(content));
+	new_element->var = ft_string_dup(content);//ft_get_substring(content, 0, ft_strlen(content));
 	new_element->next = NULL;
 	return (new_element);
 }

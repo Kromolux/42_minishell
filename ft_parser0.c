@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 20:48:08 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/28 06:22:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_parser(t_data *data)
 		}
 		if (argc == 0 && ft_strcmp(cmd->argv[0], "echo"))
 			inside_echo = 1;
-		if (cmd->argv[argc][0] == '|')
+		if (ft_strcmp(cmd->argv[argc], "||") || ft_strcmp(cmd->argv[argc], "&&") || cmd->argv[argc][0] == '|')
 		{
 			cmd->next = ft_create_cmd_elem();
 			cmd = cmd->next;
@@ -98,7 +98,7 @@ int	ft_end_of_token(char *s, int *inside_echo)
 		{
 			if (s[i] == ' ' || (s[i] >= '\t' && s[i] <= '\r'))
 				break ;
-			if (s[i] == '>' || s[i] == '<' || s[i] == '|')
+			if (s[i] == '>' || s[i] == '<' || s[i] == '|' || s[i] == '&')
 			{
 				*inside_echo = 0;
 				break ;
@@ -108,7 +108,8 @@ int	ft_end_of_token(char *s, int *inside_echo)
 	}
 	if (i == 0)
 	{
-		if (ft_strncmp(s, "<<", 2) == 0 || ft_strncmp(s, ">>", 2) == 0)
+		if (ft_strncmp(s, "<<", 2) == 0 || ft_strncmp(s, ">>", 2) == 0
+			|| ft_strncmp(s, "&&", 2) == 0 || ft_strncmp(s, "||", 2) == 0)
 			return (2);
 		else
 			return (1);

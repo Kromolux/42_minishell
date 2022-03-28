@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 20:45:40 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/28 22:06:55 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@
 # include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <sys/errno.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 255
+#  define BUFFER_SIZE 1024
 # endif
-# ifndef PATH
-# define PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+# ifndef DEFAULT_PATH
+# define DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 #endif
 
 typedef struct s_redirect {
@@ -35,6 +36,7 @@ typedef struct s_redirect {
 }				t_redirect;
 
 typedef struct s_command {
+	int					pid;
 	char				*cmd;
 	char				*argv[128];
 	struct s_redirect	*re;
@@ -60,9 +62,10 @@ typedef struct s_parse {
 	char				*string[128];
 }				t_parse;
 
+int				ft_cycle_cmd(t_data *data);
 
 //ft_error0.c
-int				ft_print_error(t_data *data);
+int				ft_print_error(t_command *cmd, int errnum);
 
 //ft_utils0.c
 size_t			ft_strlen(const char *s);
@@ -108,32 +111,53 @@ void			ft_delete_list(t_envp **lst);
 char			*ft_getenv(char *var, t_envp *envp_list);
 
 //ft_env1.c
+int				ft_env(t_data *data, t_command *cmd);
 char			*ft_get_var(char *s);
-void			ft_env(t_data *data);
 int				ft_str_var_cmp(char *var_name, char *var_elem);
+t_envp			*ft_get_envp_element(t_envp *lst, char *var);
+int				ft_count_of_envp(t_envp *envp);
 
 //ft_commands0.c
 t_command		*ft_create_cmd_elem(void);
 void			ft_delete_cmd(t_command *commands);
 t_command 		*ft_create_cmd(char *cmd);
 void			ft_print_commands(t_command *commands);
-int				ft_build_in_exe(t_data *data);
+int				ft_build_in_exe(t_command *cmd, t_data *data);
 
-//ft_export.c
-int				ft_export(t_data *data);
+//ft_export0.c
+int				ft_export(t_data *data, t_command *cmd);
 int				ft_check_validity(char *argv);
 void			ft_var_printing(t_data *data);
 t_envp			*ft_copy_envp_list(t_envp *envp);
 void			ft_add_quotes(t_envp *envp);
 
+//ft_export1.c
+void			ft_sort_list(t_envp **envp);
+void			ft_swap(t_envp **first, t_envp *swap_a);
+void			ft_change_envp(t_data *data, char *var);
+
 //ft_unset.c
-void			ft_unset(t_data *data);
+int				ft_unset(t_data *data, t_command *cmd);
+void			ft_delete_envp_elem(t_envp **first, t_envp *to_del);
 
 //ft_pwd.c
-void			ft_pwd(t_data *data);
+int				ft_pwd(t_command *cmd);
 
 //ft_echo.c
 int				ft_echo(t_command *cmd);
 int				ft_valid_option(char *input);
+
+//ft_cd.c
+int				ft_cd(t_data *data, t_command *cmd);
+
+//ft_executable.c
+int				ft_do_execve(t_command *cmd, t_data *data);
+char			*ft_check_path(char *cmd, char **paths);
+char			**ft_create_envp_array(t_envp *envp);
+
+//ft_split.c
+char			**ft_split(char const *s, const char c);
+size_t			ft_words_in_str(char const *s, const char c);
+void			ft_free_char_array(char **array);
 
 #endif
