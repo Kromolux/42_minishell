@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 22:06:55 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/29 10:36:42 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_parse {
 	char				*string[128];
 }				t_parse;
 
+//ft_minishell.c
 int				ft_cycle_cmd(t_data *data);
 
 //ft_error0.c
@@ -149,6 +150,11 @@ int				ft_valid_option(char *input);
 
 //ft_cd.c
 int				ft_cd(t_data *data, t_command *cmd);
+
+//ft_pipe.c
+int				ft_create_pipe(t_command *cmd);
+int				ft_connect_pipe(t_command *cmd);
+int				ft_close_pipe(t_command *cmd);
 
 //ft_executable.c
 int				ft_do_execve(t_command *cmd, t_data *data);

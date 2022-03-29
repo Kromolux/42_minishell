@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 22:09:25 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/29 10:38:04 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	main(int argc, char **argv, char **envp)
 		ft_print_commands(data.c_line);
 		if (ft_cycle_cmd(&data))
 			break ;
-		//waitpid
 		tmp = data.c_line;
 		while (tmp)
 		{
@@ -37,8 +36,6 @@ int	main(int argc, char **argv, char **envp)
 				waitpid(tmp->pid, NULL, 0);
 			tmp = tmp->next;
 		}
-		//ft_execev_fork...
-		//end of loop
 		free(data.r_line);
 		ft_delete_cmd(data.c_line);
 	}
@@ -59,16 +56,19 @@ int	ft_cycle_cmd(t_data *data)
 	{
 		if (cmd->argv[0] && cmd->argv[0][0])
 		{
+			if (cmd->next)
+				ft_create_pipe(cmd);
 			result = ft_build_in_exe(cmd, data);
 			if (result == 1)
 				return (1);
 			if (result == -1)
 			{
-				printf("result=%i\n", result);
+				//printf("result=%i\n", result);
 				if (ft_do_execve(cmd, data) == -1)
 					ft_print_error(cmd, 127);
 			}
 		}
+		ft_close_pipe(cmd);
 		cmd = cmd->next;
 	}
 	return (0);

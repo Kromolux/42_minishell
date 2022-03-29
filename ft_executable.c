@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 22:13:13 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/29 11:14:54 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,36 @@
 int	ft_do_execve(t_command *cmd, t_data *data)
 {
 	char	**paths;
+	char	**envp;
 	char	*cmd_path;
-	//int		pipe_fd[2];
 
 	paths = ft_split(ft_getenv("PATH", data->envp), ':');
-	printf("after split\n");
 	if (!paths)
 		paths = ft_split(DEFAULT_PATH, ':');
 	cmd_path = ft_check_path(cmd->argv[0], paths);
 	ft_free_char_array(paths);
-	printf("path=%s\n", cmd_path);
 	if (!cmd_path)
 		return (-1);
 	cmd->pid = fork();
+	if (cmd->pid < 0)
+	{
+		printf("fork failed!\n");
+		return (ft_print_error(cmd, errno));
+	}
 	if (cmd->pid == 0)
 	{
-		if (execve(cmd_path, cmd->argv, ft_create_envp_array(data->envp)) == -1)
+		ft_connect_pipe(cmd);
+		envp = ft_create_envp_array(data->envp);
+		if (execve(cmd_path, cmd->argv, envp) == -1)
 			ft_print_error(cmd, errno);
+		printf("execve failed!\n");
+		//free(cmd_path);
+		//ft_free_char_array(envp);
+		//free everything...
 		exit(0);
 	}
-	
+	free(cmd_path);
 	//check for memory leaks in children when forking
-	
 	return (0);
 }
 
@@ -71,7 +79,6 @@ char	*ft_check_path(char *cmd, char **paths)
 	{
 		test_path = ft_realloc(paths[i], "/", 0, 0);
 		test_path = ft_realloc(test_path, cmd, 1, 0);
-		printf("test_path=%s\n", test_path);
 		if (access(test_path, F_OK) == 0)
 			return (test_path);
 		free(test_path);

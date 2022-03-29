@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/03/28 21:16:49 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/03/29 09:31:38 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ SRC			:=	ft_minishell.c \
 				ft_echo.c \
 				ft_cd.c \
 				ft_executable.c \
-				ft_split.c
+				ft_split.c \
+				ft_pipe.c
 
 OBJ			:=	$(SRC:%.c=%.o)
 

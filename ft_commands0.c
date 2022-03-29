@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 21:03:08 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/29 10:21:19 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ t_command	*ft_create_cmd_elem(void)
 	output->re = (t_redirect *) malloc(sizeof(t_redirect));
 	if (!output->re)
 		return (NULL);
-	output->re->in = 0;
-	output->re->out = 1;
-	output->re->err = 2;
+	output->re->in = STDIN_FILENO;
+	output->re->out = STDOUT_FILENO;
+	output->re->err = STDERR_FILENO;
 	output->re->next = NULL;
 	return (output);
 }

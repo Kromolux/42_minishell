@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 06:22:03 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/29 11:00:41 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	ft_parser(t_data *data)
 			if (len > 0)
 			{
 				argc++;
-				cmd->argv[argc] = ft_get_substring(tmp, 0, 1);
+				cmd->argv[argc] = ft_string_dup(" ");//ft_get_substring(tmp, 0, 1);
 				tmp += len;
 			}
 		}
@@ -54,6 +54,8 @@ void	ft_parser(t_data *data)
 			inside_echo = 1;
 		if (ft_strcmp(cmd->argv[argc], "||") || ft_strcmp(cmd->argv[argc], "&&") || cmd->argv[argc][0] == '|')
 		{
+			free(cmd->argv[argc]);
+			cmd->argv[argc] = NULL;
 			cmd->next = ft_create_cmd_elem();
 			cmd = cmd->next;
 			argc = 0;
@@ -61,6 +63,7 @@ void	ft_parser(t_data *data)
 		else
 			argc++;
 	}
+	cmd->argv[argc] = NULL;
 }
 
 int	ft_len_whitespaces(const char *s)
