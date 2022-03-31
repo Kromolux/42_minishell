@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/29 10:38:04 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/31 09:37:26 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char **argv, char **envp)
 		while (tmp)
 		{
 			if (tmp->pid != 0)
-				waitpid(tmp->pid, NULL, 0);
+				waitpid(tmp->pid, NULL, WUNTRACED);
 			tmp = tmp->next;
 		}
 		free(data.r_line);
@@ -56,6 +56,7 @@ int	ft_cycle_cmd(t_data *data)
 	{
 		if (cmd->argv[0] && cmd->argv[0][0])
 		{
+			//ft_redirect(cmd);
 			if (cmd->next)
 				ft_create_pipe(cmd);
 			result = ft_build_in_exe(cmd, data);

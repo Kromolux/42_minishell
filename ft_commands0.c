@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/29 10:21:19 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/03/31 16:57:57 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_command	*ft_create_cmd_elem(void)
 void	ft_delete_cmd(t_command *commands)
 {
 	t_command	*tmp;
+	t_redirect	*re_tmp;
 	int			i;
 
 	while (commands)
@@ -46,6 +47,12 @@ void	ft_delete_cmd(t_command *commands)
 			//printf("free %p\n", tmp->argv[i]);
 			free(tmp->argv[i]);
 			i++;
+		}
+		while (tmp->re)
+		{
+			re_tmp = tmp->re;
+			tmp->re = tmp->re->next;
+			free(re_tmp);
 		}
 		//printf("free %p\n", tmp);
 		free(tmp);
