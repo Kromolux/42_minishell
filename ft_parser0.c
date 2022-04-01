@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 08:23:27 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 15:48:50 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,25 @@ void	ft_parser(t_data *data)
 
 	inside_echo = 0;
 	result = 0;
-	argc = -1;
+	argc = 0;
 	data->c_line = ft_create_cmd_elem();
 	cmd = data->c_line;
 	tmp = data->r_line;
 	tmp = ft_skip_whitespaces(tmp);
 	while (*tmp)
 	{
-		argc++;
+		if (cmd->argv[argc] && cmd->argv[argc][0])
+			argc++;
 		len = ft_end_of_token(tmp, &inside_echo);
 		//printf("len=%i\n", len);
 		token = ft_get_substring(tmp, 0, len);
 		//printf("token=%s\n", token);
 		//ft_check_redirection(cmd, argc);
-		result = ft_check_cmd(cmd, &argc, token);
+		result = ft_check_cmd(&cmd, &argc, token);
 		if (ft_strcmp(token, "<"))
 		{
-			ft_redirect_in(cmd, ft_get_next_token(&tmp + len, data));
+			tmp += len;
+			ft_redirect_in(cmd, ft_get_next_token(&tmp, data));
 		}
 		else if (ft_strcmp(token, ">"))
 		{
@@ -51,11 +53,13 @@ void	ft_parser(t_data *data)
 		}
 		else if (ft_strcmp(token, "<<"))
 		{
-			ft_redirect_in_in(cmd, ft_get_next_token(&tmp + len, data));
+			tmp += len;
+			ft_redirect_in_in(cmd, ft_get_next_token(&tmp, data));
 		}
 		else if (ft_strcmp(token, ">>"))
 		{
-			ft_redirect_out_out(cmd, ft_get_next_token(&tmp + len, data));
+			tmp += len;
+			ft_redirect_out_out(cmd, ft_get_next_token(&tmp, data));
 		}
 		if (result == 0)
 			cmd->argv[argc] = ft_check_quotes_insert_var(token, data);
@@ -82,15 +86,15 @@ void	ft_parser(t_data *data)
 	}
 }
 
-int	ft_check_cmd(t_command *cmd, int *argc, char *token)
+int	ft_check_cmd(t_command **cmd, int *argc, char *token)
 {
 	if (token[0] == '|')
 	{
 		//free(cmd->argv[argc]);
-		cmd->argv[*argc] = NULL;
-		cmd->next = ft_create_cmd_elem();
-		cmd = cmd->next;
-		*argc = -1;
+		//cmd->argv[*argc] = NULL;
+		(*cmd)->next = ft_create_cmd_elem();
+		*cmd = (*cmd)->next;
+		*argc = 0;
 		return (-1);
 	}
 	if (ft_strcmp(token, "<"))

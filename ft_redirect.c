@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:13:29 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 08:44:58 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 15:13:06 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,107 +14,70 @@
 
 void	ft_redirect_in(t_command *cmd, char *filename)
 {
-	if (cmd->re->in == STDIN_FILENO || cmd->re->in < -1)
-	{
-		cmd->re->in = open(filename, O_RDONLY);
-		if (cmd->re->in < 0)
-			ft_print_error(cmd, errno);
-	}
-	else if (cmd->re->in > 2)
-	{
-		//loop through list and create new element
-		/*
-		tmp = cmd->re;
-		while (tmp->next)
-		{
-			tmp = tmp->next;
-			if (tmp->in == -1)
-			{
-				tmp->in = open(filename, O_RDONLY);
-				if (cmd->re->in < 0)
-					ft_print_error(cmd, errno);
-				return ;
-			}
-		}
-		
-		tmp->next = ft_create_re();
-		*/
+	if (cmd->re->in > 2)
 		close(cmd->re->in);
-		cmd->re->in = open(filename, O_RDONLY);
-		if (cmd->re->in < 0)
-			ft_print_error(cmd, errno);
-	}
+	cmd->re->in = open(filename, O_RDONLY);
+	if (cmd->re->in < 0)
+		ft_print_error(cmd, errno);
 	free(filename);
 }
 
 void	ft_redirect_in_in(t_command *cmd, char *end_term)
 {
-	(void) cmd;
+	int	fd[2];
+
 	(void) end_term;
+	if (pipe(fd) == -1)
+		ft_print_error(cmd, errno);
+	if (cmd->re->in > 2)
+		close(cmd->re->in);
+	ft_heredoc(fd[1], end_term);
+	cmd->re->in = fd[0];
+	free(end_term);
 }
 
 void	ft_redirect_out(t_command *cmd, char *filename)
 {
-	if (cmd->re->out == STDOUT_FILENO || cmd->re->out < -1)
-	{
-		cmd->re->out = open(filename, O_CREAT | O_RDWR, 0722);
-		if (cmd->re->out< 0)
-			ft_print_error(cmd, errno);
-	}
-	else if (cmd->re->out > 2)
-	{
-		//loop through list and create new element
-		/*
-		tmp = cmd->re;
-		while (tmp->next)
-		{
-			tmp = tmp->next;
-			if (tmp->out == -1)
-			{
-				tmp->out = open(filename, O_CREAT | O_WRONLY);
-				if (cmd->re->out < 0)
-					ft_print_error(cmd, errno);
-				return ;
-			}
-		}
-		tmp->next = ft_create_re();
-		*/
+	if (cmd->re->out > 2)
 		close(cmd->re->out);
-		cmd->re->out = open(filename, O_CREAT | O_RDWR, 0722);
-		if (cmd->re->out < 0)
-			ft_print_error(cmd, errno);
-	}
+	cmd->re->out = open(filename, O_CREAT | O_WRONLY | O_TRUNC, FILE_RIGHTS);
+	if (cmd->re->out< 0)
+		ft_print_error(cmd, errno);
 	free(filename);
 }
 
 void	ft_redirect_out_out(t_command *cmd, char *filename)
 {
-	if (cmd->re->out == STDOUT_FILENO || cmd->re->out < -1)
-	{
-		cmd->re->out = open(filename, O_CREAT | O_WRONLY | O_APPEND);
-		if (cmd->re->out< 0)
-			ft_print_error(cmd, errno);
-	}
-	else if (cmd->re->out >= 0)
-	{
+	if (cmd->re->out > 2)
 		close(cmd->re->out);
-		cmd->re->out = open(filename, O_CREAT | O_WRONLY | O_APPEND);
-		if (cmd->re->out < 0)
-			ft_print_error(cmd, errno);
-	}
+	cmd->re->out = open(filename, O_CREAT | O_WRONLY | O_APPEND, FILE_RIGHTS);
+	if (cmd->re->out < 0)
+		ft_print_error(cmd, errno);
 	free(filename);
 }
 
-t_redirect *ft_create_re(void)
+void	ft_heredoc(int fd_out, char *end_term)
 {
-	t_redirect *output;
+	char	*user_input;
+	char	*tmp;
 
-	output = (t_redirect *) malloc(sizeof(t_redirect));
-	if (!output)
-		return (NULL);
-	output->in = -1;
-	output->out = -1;
-	output->err = -1;
-	output->next = NULL;
-	return (output);
+	printf("entered heredoc with fd=[%i] and end_term=[%s]\n", fd_out, end_term);
+	while (1)
+	{
+		write(1, "> ", 2);
+		user_input = ft_get_next_line(0);
+		tmp = ft_remove_char(ft_string_dup(user_input), '\n');
+		//printf("result after remove_char [%s]\n", tmp);
+		if (ft_strcmp(tmp, end_term))
+			break ;
+		write(fd_out, user_input, ft_strlen(user_input));
+		//printf("after write\n");
+		free(user_input);
+		//printf("after first free\n");
+		free(tmp);
+		//printf("after second free\n");
+	}
+	free(tmp);
+	free(user_input);
+	close(fd_out);
 }

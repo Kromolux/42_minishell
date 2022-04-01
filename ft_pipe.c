@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 09:08:18 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/30 18:12:59 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 16:27:30 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,14 @@ int	ft_create_pipe(t_command *cmd)
 
 	if (pipe(fd) == -1)
 		return (ft_print_error(cmd, errno));
-	cmd->re->out = fd[1];
-	cmd->next->re->in = fd[0];
+	if (cmd->re->out == STDOUT_FILENO)
+		cmd->re->out = fd[1];
+	else
+		close(fd[1]);
+	if (cmd->next->re->in == STDOUT_FILENO)
+		cmd->next->re->in = fd[0];
+	else
+		close(fd[1]);
 	return (0);
 }
 

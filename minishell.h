@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 08:40:02 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 14:36:42 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
@@ -25,6 +26,7 @@
 # include <sys/errno.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
+# define FILE_RIGHTS 0744
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
 # endif
@@ -100,7 +102,7 @@ int				ft_len_whitespaces(const char *s);
 int				ft_end_of_token(char *s, int *inside_echo);
 char			*ft_check_quotes_insert_var(char *input, t_data *data);
 void			ft_check_quote(char c, int *d_quote, int *s_quote);
-int				ft_check_cmd(t_command *cmd, int *argc, char *token);
+int				ft_check_cmd(t_command **cmd, int *argc, char *token);
 
 //ft_parser1.c
 void			ft_inside_d_quote(t_parse *check, char *input, t_data *data);
@@ -177,5 +179,9 @@ void			ft_redirect_in(t_command *cmd, char *filename);
 void			ft_redirect_out(t_command *cmd, char *filename);
 void			ft_redirect_out_out(t_command *cmd, char *filename);
 void			ft_redirect_in_in(t_command *cmd, char *end_term);
+void			ft_heredoc(int fd_out, char *end_term);
+
+//ft_get_next_line.c
+char			*ft_get_next_line(int fd);
 
 #endif

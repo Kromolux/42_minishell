@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:20:39 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 10:05:22 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 15:26:26 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	ft_strcmp(const char *s1, const char *s2)
 	size_t	i;
 
 	i = 0;
+	if (!s1 || !s2)
+		return (0);
 	while (s1[i] && s2[i])
 	{
 		if (s1[i] != s2[i])

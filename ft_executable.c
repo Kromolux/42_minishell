@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/29 11:14:54 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 11:57:14 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	char	**envp;
 	char	*cmd_path;
 
+	//printf("searching for path\n");
 	paths = ft_split(ft_getenv("PATH", data->envp), ':');
 	if (!paths)
 		paths = ft_split(DEFAULT_PATH, ':');
@@ -33,8 +34,10 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	}
 	if (cmd->pid == 0)
 	{
+		//add signalhandler here <-
 		ft_connect_pipe(cmd);
 		envp = ft_create_envp_array(data->envp);
+		//printf("child executing ->%s\n", cmd_path);
 		if (execve(cmd_path, cmd->argv, envp) == -1)
 			ft_print_error(cmd, errno);
 		printf("execve failed!\n");

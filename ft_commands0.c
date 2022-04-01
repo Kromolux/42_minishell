@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/31 16:57:57 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 10:53:30 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ void	ft_delete_cmd(t_command *commands)
 		commands = commands->next;
 		//free(tmp->cmd);
 		i = 0;
-		while (tmp->argv[i])
+		while (tmp && tmp->argv[i])
 		{
 			//printf("free %p\n", tmp->argv[i]);
 			free(tmp->argv[i]);
 			i++;
 		}
-		while (tmp->re)
+		while (tmp && tmp->re)
 		{
 			re_tmp = tmp->re;
 			tmp->re = tmp->re->next;
