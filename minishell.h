@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/31 16:49:23 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 08:40:02 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <stdio.h>
 # include <string.h>
 # include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/errno.h>
@@ -97,12 +100,14 @@ int				ft_len_whitespaces(const char *s);
 int				ft_end_of_token(char *s, int *inside_echo);
 char			*ft_check_quotes_insert_var(char *input, t_data *data);
 void			ft_check_quote(char c, int *d_quote, int *s_quote);
+int				ft_check_cmd(t_command *cmd, int *argc, char *token);
 
 //ft_parser1.c
 void			ft_inside_d_quote(t_parse *check, char *input, t_data *data);
 void			ft_inside_s_quote(t_parse *check, char *input);
 void			ft_found_dollar(t_parse *check, char *input, t_data *data);
 char			*ft_prepare_output(t_parse *check);
+char			*ft_get_next_token(char **input, t_data *data);
 
 //ft_env0.c
 t_envp			*ft_copy_envp(char **envp);
@@ -166,5 +171,11 @@ char			**ft_create_envp_array(t_envp *envp);
 char			**ft_split(char const *s, const char c);
 size_t			ft_words_in_str(char const *s, const char c);
 void			ft_free_char_array(char **array);
+
+//ft_redirect.c
+void			ft_redirect_in(t_command *cmd, char *filename);
+void			ft_redirect_out(t_command *cmd, char *filename);
+void			ft_redirect_out_out(t_command *cmd, char *filename);
+void			ft_redirect_in_in(t_command *cmd, char *end_term);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/31 09:37:26 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 08:47:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char **argv, char **envp)
 		while (tmp)
 		{
 			if (tmp->pid != 0)
-				waitpid(tmp->pid, NULL, WUNTRACED);
+				waitpid(tmp->pid, NULL, 0);
 			tmp = tmp->next;
 		}
 		free(data.r_line);

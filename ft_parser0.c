@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/31 17:21:07 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 08:23:27 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,32 @@ void	ft_parser(t_data *data)
 		token = ft_get_substring(tmp, 0, len);
 		//printf("token=%s\n", token);
 		//ft_check_redirection(cmd, argc);
-		if (result > 0)
-			
 		result = ft_check_cmd(cmd, &argc, token);
+		if (ft_strcmp(token, "<"))
+		{
+			ft_redirect_in(cmd, ft_get_next_token(&tmp + len, data));
+		}
+		else if (ft_strcmp(token, ">"))
+		{
+			printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
+			tmp += len;
+			ft_redirect_out(cmd, ft_get_next_token(&tmp, data));
+			printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
+		}
+		else if (ft_strcmp(token, "<<"))
+		{
+			ft_redirect_in_in(cmd, ft_get_next_token(&tmp + len, data));
+		}
+		else if (ft_strcmp(token, ">>"))
+		{
+			ft_redirect_out_out(cmd, ft_get_next_token(&tmp + len, data));
+		}
 		if (result == 0)
 			cmd->argv[argc] = ft_check_quotes_insert_var(token, data);
-		
-		
 		free(token);
 		//printf("argv=%s\n", data->c_line->argv[argc]);
-		tmp += len;
+		if (result < 1)
+			tmp += len;
 		//printf("tmp=%s\n", tmp);
 		if (inside_echo == 0)
 			tmp = ft_skip_whitespaces(tmp);
@@ -68,9 +84,6 @@ void	ft_parser(t_data *data)
 
 int	ft_check_cmd(t_command *cmd, int *argc, char *token)
 {
-	int	redirection;
-
-	redirection = 0;
 	if (token[0] == '|')
 	{
 		//free(cmd->argv[argc]);
@@ -114,9 +127,7 @@ int	ft_end_of_token(char *s, int *inside_echo)
 	int	i;
 	int	s_quote;
 	int	d_quote;
-	int	found_quote;
 
-	found_quote = 0;
 	s_quote = 0;
 	d_quote = 0;
 	i = 0;
@@ -129,7 +140,8 @@ int	ft_end_of_token(char *s, int *inside_echo)
 				break ;
 			if (s[i] == '>' || s[i] == '<' || s[i] == '|' || s[i] == '&')
 			{
-				*inside_echo = 0;
+				if (inside_echo)
+					*inside_echo = 0;
 				break ;
 			}
 		}
