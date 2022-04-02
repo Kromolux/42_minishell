@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 10:53:30 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:37:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,24 @@ t_command	*ft_create_cmd_elem(void)
 	return (output);
 }
 
-void	ft_delete_cmd(t_command *commands)
+void	ft_delete_cmd(t_command **commands)
 {
 	t_command	*tmp;
 	t_redirect	*re_tmp;
 	int			i;
 
-	while (commands)
+	while (*commands)
 	{
-		tmp = commands;
-		commands = commands->next;
-		//free(tmp->cmd);
+		tmp = *commands;
+		*commands = (*commands)->next;
+		free(tmp->cmd);
+		tmp->cmd = NULL;
 		i = 0;
 		while (tmp && tmp->argv[i])
 		{
 			//printf("free %p\n", tmp->argv[i]);
 			free(tmp->argv[i]);
+			tmp->argv[i] = NULL;
 			i++;
 		}
 		while (tmp && tmp->re)
@@ -53,9 +55,11 @@ void	ft_delete_cmd(t_command *commands)
 			re_tmp = tmp->re;
 			tmp->re = tmp->re->next;
 			free(re_tmp);
+			re_tmp = NULL;
 		}
 		//printf("free %p\n", tmp);
 		free(tmp);
+		tmp = NULL;
 	}
 }
 /*
@@ -102,13 +106,8 @@ int	ft_build_in_exe(t_command *cmd, t_data *data)
 		return (ft_cd(data, cmd));
 	else if (ft_strcmp(cmd->argv[0], "echo"))
 		return (ft_echo(cmd));
-	/*
-	else
-	{
-		data->errnum = 127;
-		ft_print_error(data);
-	}
-	*/
+	else if (ft_strcmp(cmd->argv[0], "error_codes"))
+		return (ft_error_codes(cmd));
 	return (-1);
 }
 
@@ -116,15 +115,18 @@ void	ft_print_commands(t_command *commands)
 {
 	int	i;
 
+	//printf("entered print commands\n");
 	while (commands)
 	{
 		//printf("cmd=%s\n", commands->cmd);
 		i = 0;
-		while (commands->argv[i])
+		while (commands->argv && commands->argv[i])
 		{
 			printf("argc=%i [%s]\n", i, commands->argv[i]);
 			i++;
 		}
+		if (commands)
+		//printf("fd in = %i\nfd out = %i\nfd err = %i\n", commands->re->in, commands->re->out, commands->re->err);
 		commands = commands->next;
 	}
 	//printf("end of print commands\n");

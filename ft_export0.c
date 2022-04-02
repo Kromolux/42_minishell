@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:02:37 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 21:52:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:37:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ int	ft_export(t_data *data, t_command *cmd)
 	while (cmd->argv[i])
 	{
 		if (!ft_check_validity(cmd->argv[i]))
-			return (ft_print_error(cmd, 1));
+		{
+			data->errnum = 1;
+			return (ft_print_error(cmd, 999));
+		}
 		ft_change_envp(data, cmd->argv[i]);
 		i++;
 	}
@@ -48,8 +51,12 @@ int	ft_check_validity(char *argv)
 	int	i;
 
 	i = 0;
+	//printf("entered check validity [%s]\n", argv);
 	if (argv[0] >= '0' && argv[0] <= '9')
+	{
+		//printf("invalid!\n");
 		return (0);
+	}
 	while (argv[i] && argv[i] != '=')
 	{
 		if ((argv[i] < 'A' || argv[i] > 'Z')

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 08:11:43 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:44:55 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,6 @@ char	*ft_get_next_token(char **input, t_data *data)
 	output = ft_check_quotes_insert_var(tmp, data);
 	free(tmp);
 	*input += len;
-	printf("remaining of input[%s] pointer=%p\n", *input, *input);
+	//printf("remaining of input[%s] pointer=%p\n", *input, *input);
 	return (output);
 }

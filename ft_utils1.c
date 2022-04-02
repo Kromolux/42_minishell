@@ -6,12 +6,11 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:19:21 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 11:21:20 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 22:27:39 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 char	*ft_int_to_string(long n)
 {

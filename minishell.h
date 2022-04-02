@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 14:36:42 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:55:54 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@
 #  define BUFFER_SIZE 1024
 # endif
 # ifndef DEFAULT_PATH
-# define DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-#endif
+#  define DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+# endif
 
 typedef struct s_redirect {
 	int					in;
@@ -59,6 +59,7 @@ typedef struct s_data {
 	struct s_command	*c_line;
 	char				*r_line;
 	int					errnum;
+	struct sigaction	response;
 }				t_data;
 
 typedef struct s_parse {
@@ -68,11 +69,18 @@ typedef struct s_parse {
 	char				*string[128];
 }				t_parse;
 
+int				g_ctrl_c;
+
+//ft_signal_handler.c
+void			ft_interactive_sigint(int sign);
+void			ft_bash_sigint(int sign);
+
 //ft_minishell.c
 int				ft_cycle_cmd(t_data *data);
 
 //ft_error0.c
 int				ft_print_error(t_command *cmd, int errnum);
+int				ft_error_codes(t_command *cmd);
 
 //ft_utils0.c
 size_t			ft_strlen(const char *s);
@@ -128,7 +136,7 @@ int				ft_count_of_envp(t_envp *envp);
 
 //ft_commands0.c
 t_command		*ft_create_cmd_elem(void);
-void			ft_delete_cmd(t_command *commands);
+void			ft_delete_cmd(t_command **commands);
 t_command 		*ft_create_cmd(char *cmd);
 void			ft_print_commands(t_command *commands);
 int				ft_build_in_exe(t_command *cmd, t_data *data);

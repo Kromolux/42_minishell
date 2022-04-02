@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 11:57:14 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:04:46 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	ft_free_char_array(paths);
 	if (!cmd_path)
 		return (-1);
+	//printf("found path %s\n", cmd_path);
 	cmd->pid = fork();
+	//printf("after forking pid=%i\n", cmd->pid);
 	if (cmd->pid < 0)
 	{
 		printf("fork failed!\n");
@@ -35,9 +37,11 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	if (cmd->pid == 0)
 	{
 		//add signalhandler here <-
+		sigaction(SIGINT, NULL, NULL);
+		//printf("child executing ->%s\n", cmd_path);
 		ft_connect_pipe(cmd);
 		envp = ft_create_envp_array(data->envp);
-		//printf("child executing ->%s\n", cmd_path);
+		
 		if (execve(cmd_path, cmd->argv, envp) == -1)
 			ft_print_error(cmd, errno);
 		printf("execve failed!\n");

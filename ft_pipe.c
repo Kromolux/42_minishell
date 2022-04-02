@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 09:08:18 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 16:27:30 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:04:30 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,27 @@ int	ft_create_pipe(t_command *cmd)
 
 	if (pipe(fd) == -1)
 		return (ft_print_error(cmd, errno));
+	//printf("pipe %i %i created\n", fd[0], fd[1]);
 	if (cmd->re->out == STDOUT_FILENO)
+	{
 		cmd->re->out = fd[1];
+		//printf("connected fd %i with out this cmd\n", fd[1]);
+	}
 	else
+	{
+		//printf("closed fd %i\n", fd[1]);
 		close(fd[1]);
-	if (cmd->next->re->in == STDOUT_FILENO)
+	}
+	if (cmd->next->re->in == STDIN_FILENO)
+	{
 		cmd->next->re->in = fd[0];
+		//printf("connected fd %i with in next cmd\n", fd[0]);
+	}
 	else
-		close(fd[1]);
+	{
+		close(fd[0]);
+		//printf("closed fd %i\n", fd[0]);
+	}
 	return (0);
 }
 

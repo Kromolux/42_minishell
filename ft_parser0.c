@@ -6,11 +6,13 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 15:48:50 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:41:29 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 void	ft_parser(t_data *data)
 {
@@ -46,15 +48,29 @@ void	ft_parser(t_data *data)
 		}
 		else if (ft_strcmp(token, ">"))
 		{
-			printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
+			//printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
 			tmp += len;
 			ft_redirect_out(cmd, ft_get_next_token(&tmp, data));
-			printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
+			//printf("remaining of input[%s] pointer=%p\n", tmp, tmp);
 		}
 		else if (ft_strcmp(token, "<<"))
 		{
 			tmp += len;
+			data->response.sa_handler  = ft_bash_sigint;
+			signal(SIGQUIT, SIG_DFL);
+			sigaction(SIGINT, &data->response, NULL);
 			ft_redirect_in_in(cmd, ft_get_next_token(&tmp, data));
+			data->response.sa_handler  = ft_interactive_sigint;
+			sigaction(SIGINT, &data->response, NULL);
+			signal(SIGQUIT, SIG_IGN);
+			if (g_ctrl_c)
+			{
+				g_ctrl_c = 0;
+				ft_delete_cmd(&data->c_line);
+				write(1, "\n", 1);
+				//printf("quit with signal\n");
+				break ;
+			}
 		}
 		else if (ft_strcmp(token, ">>"))
 		{
@@ -76,7 +92,7 @@ void	ft_parser(t_data *data)
 			if (len > 0)
 			{
 				argc++;
-				cmd->argv[argc] = ft_string_dup(" ");//ft_get_substring(tmp, 0, 1);
+				cmd->argv[argc] = ft_string_dup(" ");
 				tmp += len;
 			}
 		}
@@ -90,8 +106,6 @@ int	ft_check_cmd(t_command **cmd, int *argc, char *token)
 {
 	if (token[0] == '|')
 	{
-		//free(cmd->argv[argc]);
-		//cmd->argv[*argc] = NULL;
 		(*cmd)->next = ft_create_cmd_elem();
 		*cmd = (*cmd)->next;
 		*argc = 0;

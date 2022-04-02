@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:13:29 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 15:13:06 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:42:32 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,26 @@ void	ft_heredoc(int fd_out, char *end_term)
 {
 	char	*user_input;
 	char	*tmp;
+	int		signal;
 
-	printf("entered heredoc with fd=[%i] and end_term=[%s]\n", fd_out, end_term);
+	sigaction(SIGINT, NULL, NULL);
+	sigaction(SIGQUIT, NULL, NULL);
+	signal = 0;
+	//printf("entered heredoc with fd=[%i] and end_term=[%s]\n", fd_out, end_term);
 	while (1)
 	{
-		write(1, "> ", 2);
+		if (signal == 0)
+			write(1, "> ", 2);
 		user_input = ft_get_next_line(0);
 		tmp = ft_remove_char(ft_string_dup(user_input), '\n');
 		//printf("result after remove_char [%s]\n", tmp);
-		if (ft_strcmp(tmp, end_term))
+		if (ft_strcmp(tmp, end_term) || g_ctrl_c)
 			break ;
 		write(fd_out, user_input, ft_strlen(user_input));
+		if (!user_input)
+			signal = 1;
+		else
+			signal = 0;
 		//printf("after write\n");
 		free(user_input);
 		//printf("after first free\n");
