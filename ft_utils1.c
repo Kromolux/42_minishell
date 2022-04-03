@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:19:21 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 22:27:39 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/02 17:24:37 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,16 @@ size_t	ft_count_of_in_str(const char *s, const char c)
 
 char	*ft_char_in_str(const char *s, const char c)
 {
-	while (*s)
+	char	*tmp;
+
+	if (!s || !c)
+		return (NULL);
+	tmp = (char *) s;
+	while (*tmp)
 	{
-		if (*s == c)
-			return ((char *)s);
-		s++;
+		if (*tmp == c)
+			return ((char *)tmp);
+		tmp++;
 	}
 	return (NULL);
 }

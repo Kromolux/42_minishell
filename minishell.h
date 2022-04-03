@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:55:54 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:45:26 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void			ft_bash_sigint(int sign);
 int				ft_cycle_cmd(t_data *data);
 
 //ft_error0.c
-int				ft_print_error(t_command *cmd, int errnum);
+int				ft_print_error(t_command *cmd, int errnum, char *filename);
 int				ft_error_codes(t_command *cmd);
 
 //ft_utils0.c
@@ -95,6 +95,7 @@ size_t			ft_get_int_len(long n, int sign);
 size_t			ft_count_of_in_str(const char *s, const char c);
 char			*ft_char_in_str(const char *s, const char c);
 char			*ft_realloc(char *s1, char *s2, int free_s1, int free_s2);
+void			ft_write_fd(int fd, char *s);
 
 //ft_utils2.c
 int				ft_pos_in_string(char *s, char c);

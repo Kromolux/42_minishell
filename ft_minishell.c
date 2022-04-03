@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/02 00:17:26 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/03 12:01:29 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		data.r_line = readline(PROMPT);
+		//data.r_line = ft_get_next_line(STDIN_FILENO);
 		if (data.r_line == NULL)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
@@ -79,7 +80,7 @@ int	ft_cycle_cmd(t_data *data)
 				return (1);
 			if (result == -1 && ft_do_execve(cmd, data) == -1)
 			{
-				ft_print_error(cmd, 127);
+				ft_print_error(cmd, 127, NULL);
 				data->errnum = 127;
 			}
 		}

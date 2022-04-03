@@ -6,11 +6,17 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:17:56 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/27 12:10:53 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:45:05 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
+void	ft_write_fd(int fd, char *s)
+{
+	write(fd, s, ft_strlen(s));
+}
 
 size_t	ft_strlen(const char *s)
 {

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:04:46 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:49:54 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,17 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	if (!cmd_path)
 		return (-1);
 	//printf("found path %s\n", cmd_path);
+	if (cmd->re->in == -1)
+	{
+		free(cmd_path);
+		return (0);
+	}
 	cmd->pid = fork();
 	//printf("after forking pid=%i\n", cmd->pid);
 	if (cmd->pid < 0)
 	{
 		printf("fork failed!\n");
-		return (ft_print_error(cmd, errno));
+		return (ft_print_error(cmd, errno, NULL));
 	}
 	if (cmd->pid == 0)
 	{
@@ -43,7 +48,7 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 		envp = ft_create_envp_array(data->envp);
 		
 		if (execve(cmd_path, cmd->argv, envp) == -1)
-			ft_print_error(cmd, errno);
+			ft_print_error(cmd, errno, NULL);
 		printf("execve failed!\n");
 		//free(cmd_path);
 		//ft_free_char_array(envp);
@@ -61,7 +66,7 @@ char	**ft_create_envp_array(t_envp *envp)
 	t_envp	*tmp;
 	int		i;
 
-	output = (char **) malloc(ft_count_of_envp(envp) + 1);
+	output = (char **) malloc((ft_count_of_envp(envp) + 1) * sizeof(char *));
 	if (!output)
 		return (NULL);
 	tmp = envp;
@@ -82,6 +87,11 @@ char	*ft_check_path(char *cmd, char **paths)
 	int		i;
 
 	i = 0;
+	if (ft_char_in_str(cmd, '/'))
+	{
+		if (access(cmd, F_OK) == 0)
+			return (ft_string_dup(cmd));
+	}
 	while (paths[i])
 	{
 		test_path = ft_realloc(paths[i], "/", 0, 0);

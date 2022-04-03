@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:02:37 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:37:47 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:49:20 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_export(t_data *data, t_command *cmd)
 		if (!ft_check_validity(cmd->argv[i]))
 		{
 			data->errnum = 1;
-			return (ft_print_error(cmd, 999));
+			return (ft_print_error(cmd, 999, NULL));
 		}
 		ft_change_envp(data, cmd->argv[i]);
 		i++;
