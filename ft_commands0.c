@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:37:47 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 11:38:37 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_command *ft_create_cmd(char *input)
 int	ft_build_in_exe(t_command *cmd, t_data *data)
 {
 	if (ft_strcmp(cmd->argv[0], "exit"))
-		return (1);
+		return (ft_exit(cmd, data));
 	else if (ft_strcmp(cmd->argv[0], "pwd"))
 		return (ft_pwd(cmd));
 	else if (ft_strcmp(cmd->argv[0], "env"))

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/03 11:49:54 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 10:26:34 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 
 	//printf("searching for path\n");
 	paths = ft_split(ft_getenv("PATH", data->envp), ':');
-	if (!paths)
-		paths = ft_split(DEFAULT_PATH, ':');
+	//if (!paths)
+	//	paths = ft_split(DEFAULT_PATH, ':');
 	cmd_path = ft_check_path(cmd->argv[0], paths);
 	ft_free_char_array(paths);
 	if (!cmd_path)
-		return (-1);
+		return (127);
 	//printf("found path %s\n", cmd_path);
 	if (cmd->re->in == -1)
 	{
 		free(cmd_path);
-		return (0);
+		return (1);
 	}
 	cmd->pid = fork();
 	//printf("after forking pid=%i\n", cmd->pid);
@@ -92,7 +92,7 @@ char	*ft_check_path(char *cmd, char **paths)
 		if (access(cmd, F_OK) == 0)
 			return (ft_string_dup(cmd));
 	}
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		test_path = ft_realloc(paths[i], "/", 0, 0);
 		test_path = ft_realloc(test_path, cmd, 1, 0);

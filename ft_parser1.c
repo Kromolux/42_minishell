@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:44:55 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 12:30:17 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 		{
 			check->string[check->i_string] = ft_get_substring(input, check->start, check->i - check->start);
 			check->i_string++;
+			check->start = check->i + 1;
 			break ;
 		}
 		check->i++;
@@ -50,6 +51,7 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 		{
 			check->string[check->i_string] = ft_get_substring(input, check->start, check->i - check->start);
 			check->i_string++;
+			check->start = check->i + 1;
 			break ;
 		}
 		check->i++;

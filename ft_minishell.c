@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/03 12:01:29 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 22:06:54 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,16 @@ int	main(int argc, char **argv, char **envp)
 	t_command	*tmp;
 
 	g_ctrl_c = 0;
+	ft_initialize(&data);
 	sigemptyset(&data.response.sa_mask);
+	sigaddset(&data.response.sa_mask, SIGCHLD);
 	data.response.sa_handler  = ft_interactive_sigint;
-	data.response.sa_flags = SA_SIGINFO;
+	data.response.sa_flags = SA_NOCLDSTOP;
 	sigaction(SIGINT, &data.response, NULL);
+	sigemptyset(&data.child.sa_mask);
+	data.child.sa_handler = ft_child_crash;
+	data.child.sa_flags = SA_SIGINFO;
+	sigaction(SIGCHLD, &data.child, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	data.errnum = 0;
 	(void) argc;
@@ -47,6 +53,11 @@ int	main(int argc, char **argv, char **envp)
 		{
 			if (tmp->pid != 0)
 				waitpid(tmp->pid, NULL, WUNTRACED);
+			if (g_ctrl_c == 130)
+			{
+				data.errnum = 130;
+				g_ctrl_c = 0;
+			}
 			tmp = tmp->next;
 		}
 		free(data.r_line);
@@ -59,6 +70,14 @@ int	main(int argc, char **argv, char **envp)
 	if (data.r_line)
 		free(data.r_line);
 	return (data.errnum);
+}
+
+void	ft_initialize(t_data *data)
+{
+	data->c_line = NULL;
+	data->r_line = NULL;
+	data->envp = NULL;
+	data->errnum = 0;
 }
 
 int	ft_cycle_cmd(t_data *data)
@@ -76,13 +95,16 @@ int	ft_cycle_cmd(t_data *data)
 			if (cmd->next)
 				ft_create_pipe(cmd);
 			result = ft_build_in_exe(cmd, data);
-			if (result == 1)
+			if (result == 2)
 				return (1);
-			if (result == -1 && ft_do_execve(cmd, data) == -1)
+			if (result == -1)
 			{
-				ft_print_error(cmd, 127, NULL);
-				data->errnum = 127;
+				data->errnum = ft_do_execve(cmd, data);
+				if (data->errnum == 127)
+					ft_print_error(cmd, 127, NULL);
 			}
+			else if (result != 999)
+				data->errnum = result;
 		}
 		ft_close_pipe(cmd);
 		cmd = cmd->next;

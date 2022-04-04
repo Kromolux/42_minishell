@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/03 11:45:26 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 21:37:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <sys/errno.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
-# define FILE_RIGHTS 0744
+# define FILE_RIGHTS 0664
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
 # endif
@@ -60,6 +60,7 @@ typedef struct s_data {
 	char				*r_line;
 	int					errnum;
 	struct sigaction	response;
+	struct sigaction	child;
 }				t_data;
 
 typedef struct s_parse {
@@ -74,9 +75,11 @@ int				g_ctrl_c;
 //ft_signal_handler.c
 void			ft_interactive_sigint(int sign);
 void			ft_bash_sigint(int sign);
+void			ft_child_crash(int sign);
 
 //ft_minishell.c
 int				ft_cycle_cmd(t_data *data);
+void			ft_initialize(t_data *data);
 
 //ft_error0.c
 int				ft_print_error(t_command *cmd, int errnum, char *filename);
@@ -104,6 +107,9 @@ int				ft_strncmp(const char *s1, const char *s2, size_t n);
 char			*ft_strnstr(const char *big, const char *little, size_t len);
 char			*ft_remove_char(char *s, char c);
 
+//ft_utils3.c
+long			ft_string_to_int(const char *nptr);
+
 //ft_parser0.c
 void			ft_parser(t_data *data);
 char			*ft_skip_whitespaces(const char *str);
@@ -119,6 +125,10 @@ void			ft_inside_s_quote(t_parse *check, char *input);
 void			ft_found_dollar(t_parse *check, char *input, t_data *data);
 char			*ft_prepare_output(t_parse *check);
 char			*ft_get_next_token(char **input, t_data *data);
+
+//ft_exit.c
+int				ft_exit(t_command *cmd, t_data *data);
+int				ft_is_number_only(char *input);
 
 //ft_env0.c
 t_envp			*ft_copy_envp(char **envp);

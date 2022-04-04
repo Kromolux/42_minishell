@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 21:41:29 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/04 21:13:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	ft_parser(t_data *data)
 				ft_delete_cmd(&data->c_line);
 				write(1, "\n", 1);
 				//printf("quit with signal\n");
+				free(token);
 				break ;
 			}
 		}
@@ -211,8 +212,12 @@ char	*ft_check_quotes_insert_var(char *input, t_data *data)
 			ft_found_dollar(&check, input, data);
 		check.i++;
 	}
-	
 	if (check.i_string == 0)
 		return (ft_string_dup(input));
+	if (check.start != check.i)
+	{
+		check.string[check.i_string] = ft_string_dup(&input[check.start]);
+		check.i_string++;
+	}
 	return (ft_prepare_output(&check));
 }
