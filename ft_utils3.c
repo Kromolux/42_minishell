@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 11:23:54 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/04 11:24:12 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 16:50:56 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,30 @@ static int	check_sign(const char *str, int *i_str)
 		i++;
 	*i_str = i;
 	return (sign);
+}
+
+void	ft_write_fd(int fd, char *s)
+{
+	write(fd, s, ft_strlen(s));
+}
+
+void	ft_write_fd_nl(int fd, char *s)
+{
+	write(fd, s, ft_strlen(s));
+	write(fd, "\n", 1);
+}
+
+void	ft_print_bits(int input)
+{
+	int		i;
+	char	c;
+
+	i = 31;
+	while (i >= 0)
+	{
+		c = (( (input >> i) & 1) + '0');
+		write(1, &c, 1);
+		i--;
+	}
+	write(1, "\n", 1);
 }

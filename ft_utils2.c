@@ -6,13 +6,13 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:20:39 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 15:26:26 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 08:50:16 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		ft_pos_in_string(char *s, char c)
+int	ft_pos_in_string(char *s, char c)
 {
 	int	i;
 

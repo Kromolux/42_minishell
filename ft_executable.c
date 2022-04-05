@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/04 10:26:34 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 15:32:28 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,49 +15,42 @@
 int	ft_do_execve(t_command *cmd, t_data *data)
 {
 	char	**paths;
-	char	**envp;
 	char	*cmd_path;
 
-	//printf("searching for path\n");
 	paths = ft_split(ft_getenv("PATH", data->envp), ':');
-	//if (!paths)
-	//	paths = ft_split(DEFAULT_PATH, ':');
 	cmd_path = ft_check_path(cmd->argv[0], paths);
 	ft_free_char_array(paths);
 	if (!cmd_path)
 		return (127);
-	//printf("found path %s\n", cmd_path);
 	if (cmd->re->in == -1)
 	{
 		free(cmd_path);
 		return (1);
 	}
 	cmd->pid = fork();
-	//printf("after forking pid=%i\n", cmd->pid);
 	if (cmd->pid < 0)
-	{
-		printf("fork failed!\n");
 		return (ft_print_error(cmd, errno, NULL));
-	}
 	if (cmd->pid == 0)
-	{
-		//add signalhandler here <-
-		sigaction(SIGINT, NULL, NULL);
-		//printf("child executing ->%s\n", cmd_path);
-		ft_connect_pipe(cmd);
-		envp = ft_create_envp_array(data->envp);
-		
-		if (execve(cmd_path, cmd->argv, envp) == -1)
-			ft_print_error(cmd, errno, NULL);
-		printf("execve failed!\n");
-		//free(cmd_path);
-		//ft_free_char_array(envp);
-		//free everything...
-		exit(0);
-	}
+		ft_child_process(cmd, data, cmd_path);
 	free(cmd_path);
-	//check for memory leaks in children when forking
 	return (0);
+}
+
+void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
+{
+	char	**envp;
+
+	ft_set_child_active();
+	ft_connect_pipe(cmd);
+	envp = ft_create_envp_array(data->envp);
+	if (execve(cmd_path, cmd->argv, envp) == -1)
+		ft_print_error(cmd, errno, NULL);
+	ft_close_pipe(cmd);
+	ft_free_char_array(envp);
+	ft_delete_list(&data->envp);
+	ft_delete_cmd(&data->c_line);
+	free(cmd_path);
+	exit(0);
 }
 
 char	**ft_create_envp_array(t_envp *envp)

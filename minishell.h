@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/04 21:37:03 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 16:51:10 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/errno.h>
+# include <limits.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
 # define FILE_RIGHTS 0664
@@ -43,6 +44,7 @@ typedef struct s_redirect {
 
 typedef struct s_command {
 	int					pid;
+	int					errnum;
 	char				*cmd;
 	char				*argv[128];
 	struct s_redirect	*re;
@@ -72,14 +74,23 @@ typedef struct s_parse {
 
 int				g_ctrl_c;
 
+//ft_signals.c
+void			ft_set_parent_interactive(void);
+void			ft_set_parent_active(void);
+void			ft_set_parent_heredoc(void);
+void			ft_set_child_active(void);
+
 //ft_signal_handler.c
-void			ft_interactive_sigint(int sign);
+void			ft_parent_interactive_sigint(int sign);
+void			ft_parent_active_sigint(int sign);
+void			ft_parent_active_sigquit(int sign);
 void			ft_bash_sigint(int sign);
-void			ft_child_crash(int sign);
 
 //ft_minishell.c
 int				ft_cycle_cmd(t_data *data);
-void			ft_initialize(t_data *data);
+void			ft_initialize(t_data *data, char **envp);
+void			ft_wait_for_kids(t_data *data);
+void			ft_clear_mem(t_data *data);
 
 //ft_error0.c
 int				ft_print_error(t_command *cmd, int errnum, char *filename);
@@ -98,7 +109,6 @@ size_t			ft_get_int_len(long n, int sign);
 size_t			ft_count_of_in_str(const char *s, const char c);
 char			*ft_char_in_str(const char *s, const char c);
 char			*ft_realloc(char *s1, char *s2, int free_s1, int free_s2);
-void			ft_write_fd(int fd, char *s);
 
 //ft_utils2.c
 int				ft_pos_in_string(char *s, char c);
@@ -109,15 +119,15 @@ char			*ft_remove_char(char *s, char c);
 
 //ft_utils3.c
 long			ft_string_to_int(const char *nptr);
+void			ft_write_fd(int fd, char *s);
+void			ft_print_bits(int input);
+void			ft_write_fd_nl(int fd, char *s);
 
 //ft_parser0.c
+int				ft_check_heredoc_end_term(char *s);
 void			ft_parser(t_data *data);
-char			*ft_skip_whitespaces(const char *str);
-int				ft_len_whitespaces(const char *s);
 int				ft_end_of_token(char *s, int *inside_echo);
-char			*ft_check_quotes_insert_var(char *input, t_data *data);
-void			ft_check_quote(char c, int *d_quote, int *s_quote);
-int				ft_check_cmd(t_command **cmd, int *argc, char *token);
+int				ft_find_end_of_token(char *s, int *inside_echo);
 
 //ft_parser1.c
 void			ft_inside_d_quote(t_parse *check, char *input, t_data *data);
@@ -125,6 +135,13 @@ void			ft_inside_s_quote(t_parse *check, char *input);
 void			ft_found_dollar(t_parse *check, char *input, t_data *data);
 char			*ft_prepare_output(t_parse *check);
 char			*ft_get_next_token(char **input, t_data *data);
+
+//ft_parser2.c
+int				ft_check_cmd(t_command **cmd, int *argc, char *token);
+void			ft_check_quote(char c, int *d_quote, int *s_quote);
+int				ft_len_whitespaces(const char *s);
+char			*ft_skip_whitespaces(const char *str);
+char			*ft_check_quotes_insert_var(char *input, t_data *data);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);
@@ -136,7 +153,6 @@ t_envp			*ft_lstnew(char *content);
 t_envp			*ft_lstlast(t_envp *lst);
 void			ft_lstadd_back(t_envp **lst, t_envp *new);
 void			ft_delete_list(t_envp **lst);
-char			*ft_getenv(char *var, t_envp *envp_list);
 
 //ft_env1.c
 int				ft_env(t_data *data, t_command *cmd);
@@ -145,12 +161,19 @@ int				ft_str_var_cmp(char *var_name, char *var_elem);
 t_envp			*ft_get_envp_element(t_envp *lst, char *var);
 int				ft_count_of_envp(t_envp *envp);
 
+//ft_env2.c
+char			*ft_getenv(char *var, t_envp *envp_list);
+
 //ft_commands0.c
 t_command		*ft_create_cmd_elem(void);
 void			ft_delete_cmd(t_command **commands);
-t_command 		*ft_create_cmd(char *cmd);
+t_command		*ft_create_cmd(char *cmd);
 void			ft_print_commands(t_command *commands);
 int				ft_build_in_exe(t_command *cmd, t_data *data);
+
+//ft_commands1.c
+int				ft_first_cmd(t_command *cmd, t_data *data);
+t_command		*ft_last_cmd(t_command *cmd);
 
 //ft_export0.c
 int				ft_export(t_data *data, t_command *cmd);
@@ -187,6 +210,7 @@ int				ft_close_pipe(t_command *cmd);
 int				ft_do_execve(t_command *cmd, t_data *data);
 char			*ft_check_path(char *cmd, char **paths);
 char			**ft_create_envp_array(t_envp *envp);
+void			ft_child_process(t_command *cmd, t_data *data, char *cmd_path);
 
 //ft_split.c
 char			**ft_split(char const *s, const char c);

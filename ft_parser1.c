@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/04 12:30:17 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 11:19:23 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 {
 	if (check->i > 0)
 	{
-		check->string[check->i_string] = ft_get_substring(input, 0, check->i - check->start);
+		check->string[check->i_string] = ft_get_substring
+			(input, 0, check->i - check->start);
 		check->i_string++;
 	}
 	check->start = check->i + 1;
@@ -27,7 +28,8 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 			ft_found_dollar(check, input, data);
 		if (input[check->i] == '\"')
 		{
-			check->string[check->i_string] = ft_get_substring(input, check->start, check->i - check->start);
+			check->string[check->i_string] = ft_get_substring
+				(input, check->start, check->i - check->start);
 			check->i_string++;
 			check->start = check->i + 1;
 			break ;
@@ -40,7 +42,8 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 {
 	if (check->i > 0)
 	{
-		check->string[check->i_string] = ft_get_substring(input, 0, check->i - check->start);
+		check->string[check->i_string] = ft_get_substring
+			(input, 0, check->i - check->start);
 		check->i_string++;
 	}
 	check->start = check->i + 1;
@@ -49,7 +52,8 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 	{
 		if (input[check->i] == '\'')
 		{
-			check->string[check->i_string] = ft_get_substring(input, check->start, check->i - check->start);
+			check->string[check->i_string] = ft_get_substring
+				(input, check->start, check->i - check->start);
 			check->i_string++;
 			check->start = check->i + 1;
 			break ;
@@ -61,15 +65,16 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 {
 	char	*tmp;
-	
-	check->string[check->i_string] = ft_get_substring(input, check->start,
-		check->i - check->start);
+
+	check->string[check->i_string] = ft_get_substring
+		(input, check->start, check->i - check->start);
 	check->i_string++;
 	tmp = ft_get_var(&input[check->i + 1]);
 	if (ft_strncmp(tmp, "?", 1) == 0)
-		check->string[check->i_string] = ft_int_to_string(data->errnum);
+		check->string[check->i_string] = ft_int_to_string((long) data->errnum);
 	else
-		check->string[check->i_string] = ft_string_dup(ft_getenv(tmp, data->envp));
+		check->string[check->i_string] = ft_string_dup
+			(ft_getenv(tmp, data->envp));
 	check->i_string++;
 	check->i += ft_strlen(tmp);
 	check->start = check->i + 1;
@@ -104,6 +109,5 @@ char	*ft_get_next_token(char **input, t_data *data)
 	output = ft_check_quotes_insert_var(tmp, data);
 	free(tmp);
 	*input += len;
-	//printf("remaining of input[%s] pointer=%p\n", *input, *input);
 	return (output);
 }

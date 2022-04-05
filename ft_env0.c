@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 18:41:59 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 09:47:43 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 08:37:15 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_envp	*ft_lstnew(char *content)
 	new_element = (t_envp *) malloc(sizeof(t_envp));
 	if (!new_element)
 		return (NULL);
-	new_element->var = ft_string_dup(content);//ft_get_substring(content, 0, ft_strlen(content));
+	new_element->var = ft_string_dup(content);
 	new_element->next = NULL;
 	return (new_element);
 }
@@ -56,7 +56,6 @@ void	ft_lstadd_back(t_envp **lst, t_envp *new)
 		*lst = new;
 	else
 		ft_lstlast(*lst)->next = new;
-
 }
 
 void	ft_delete_list(t_envp **lst)
@@ -71,15 +70,4 @@ void	ft_delete_list(t_envp **lst)
 		free(tmp);
 	}
 	*lst = NULL;
-}
-
-char	*ft_getenv(char *var, t_envp *envp_list)
-{
-	while (!ft_str_var_cmp(var, envp_list->var))
-	{
-		envp_list = envp_list->next;
-		if (envp_list == NULL)
-			return (NULL);
-	}
-	return (&envp_list->var[ft_pos_in_string(envp_list->var, '=') + 1]);
 }

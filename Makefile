@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/04 11:25:07 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/05 15:34:09 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,9 +24,12 @@ SRC			:=	ft_minishell.c \
 				ft_utils3.c \
 				ft_parser0.c \
 				ft_parser1.c \
+				ft_parser2.c \
 				ft_commands0.c \
+				ft_commands1.c \
 				ft_env0.c \
 				ft_env1.c \
+				ft_env2.c \
 				ft_export0.c \
 				ft_export1.c \
 				ft_unset.c \
@@ -38,6 +41,7 @@ SRC			:=	ft_minishell.c \
 				ft_pipe.c \
 				ft_redirect.c \
 				ft_get_next_line.c \
+				ft_signals.c \
 				ft_signal_handler.c \
 				ft_exit.c
 

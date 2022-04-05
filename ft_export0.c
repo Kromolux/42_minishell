@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:02:37 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/03 11:49:20 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 13:21:49 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	ft_export(t_data *data, t_command *cmd)
 {
 	int	i;
 
+	//if (cmd != data->c_line)
+	//	return (0);
 	i = 1;
 	if (!cmd->argv[1])
 		ft_var_printing(data);
@@ -23,10 +25,11 @@ int	ft_export(t_data *data, t_command *cmd)
 	{
 		if (!ft_check_validity(cmd->argv[i]))
 		{
-			data->errnum = 1;
-			return (ft_print_error(cmd, 999, NULL));
+			cmd->errnum = 1;
+			ft_print_error(cmd, 999, cmd->argv[i]);
 		}
-		ft_change_envp(data, cmd->argv[i]);
+		else
+			ft_change_envp(data, cmd->argv[i]);
 		i++;
 	}
 	return (0);
@@ -51,12 +54,8 @@ int	ft_check_validity(char *argv)
 	int	i;
 
 	i = 0;
-	//printf("entered check validity [%s]\n", argv);
 	if (argv[0] >= '0' && argv[0] <= '9')
-	{
-		//printf("invalid!\n");
 		return (0);
-	}
 	while (argv[i] && argv[i] != '=')
 	{
 		if ((argv[i] < 'A' || argv[i] > 'Z')
@@ -101,7 +100,8 @@ void	ft_sort_list(t_envp **envp)
 		tmp = *envp;
 		while (tmp && tmp->next)
 		{
-			equation = ft_strncmp(tmp->var, tmp->next->var, ft_pos_in_string(tmp->var, '='));
+			equation = ft_strncmp(tmp->var, tmp->next->var,
+					ft_pos_in_string(tmp->var, '='));
 			if (equation > 0)
 			{
 				ft_swap(envp, tmp);

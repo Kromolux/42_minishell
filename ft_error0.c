@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 17:49:25 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/04 11:40:11 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 16:05:16 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,31 @@ int	ft_print_error(t_command *cmd, int errnum, char *filename)
 		else
 			ft_write_fd(cmd->re->err, ": command not found\n");
 	}
+	else if (errnum == 1024)
+	{
+		ft_write_fd(cmd->re->err, "syntax error near unexpected token\n");
+		cmd->errnum = 2;
+	}
 	else if (errnum == 999)
 	{
 		ft_write_fd(cmd->re->err, ": ");
 		ft_write_fd(cmd->re->err, cmd->argv[1]);
 		ft_write_fd(cmd->re->err, ": not a valid identifier\n");
-		errnum = 1;
+		cmd->errnum = 1;
 	}
 	else if (errnum == 888)
 	{
 		ft_write_fd(cmd->re->err, ": ");
 		ft_write_fd(cmd->re->err, cmd->argv[1]);
 		ft_write_fd(cmd->re->err, ": numeric argument required\n");
-		errnum = 2;
+		cmd->errnum = 2;
 	}
 	else if (errnum == 777)
 	{
 		ft_write_fd(cmd->re->err, ": ");
 		ft_write_fd(cmd->re->err, cmd->argv[1]);
 		ft_write_fd(cmd->re->err, ": too many arguments\n");
-		errnum = 2;
-		return (0);
+		cmd->errnum = 2;
 	}
 	else
 	{
@@ -54,7 +58,7 @@ int	ft_print_error(t_command *cmd, int errnum, char *filename)
 		ft_write_fd(cmd->re->err, strerror(errnum));
 		write(cmd->re->err, "\n", 1);
 	}
-	return (errnum);
+	return (0);
 }
 
 int	ft_error_codes(t_command *cmd)

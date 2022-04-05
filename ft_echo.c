@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 15:28:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/29 11:33:55 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 11:20:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	ft_echo(t_command *cmd)
 	{
 		if (!cmd->argv[i + 1] && cmd->argv[i][0] == ' ')
 			break ;
-		write(cmd->re->out, cmd->argv[i], ft_strlen(cmd->argv[i]));
+		ft_write_fd(cmd->re->out, cmd->argv[i]);
 		i++;
 	}
 	if (new_line)

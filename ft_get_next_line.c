@@ -6,12 +6,11 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 13:44:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/01 13:44:24 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 08:01:29 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static char	*ft_gnl_handling(char *buffer, int fd, char *output);
 static char	*ft_found_new_line(char *buffer, char *output);

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:25:14 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/30 17:39:50 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/05 08:35:45 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ int	ft_env(t_data *data, t_command *cmd)
 
 char	*ft_get_var(char *s)
 {
-	int	i;
-	char *output;
-	
+	int		i;
+	char	*output;
+
 	i = 0;
 	while (s[i])
 	{
@@ -41,7 +41,6 @@ char	*ft_get_var(char *s)
 			break ;
 		else if (s[i] == '\"' || s[i] == '\'' || s[i] == '$' || s[i] == '=')
 			break ;
-		//add other break conditions here <-
 		if (s[i] == '?')
 		{
 			i++;
