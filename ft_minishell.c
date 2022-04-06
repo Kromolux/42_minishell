@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 13:01:51 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:30:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(data.r_line) > 0)
 			add_history(data.r_line);
 		ft_parser(&data);
-		//ft_print_commands(data.c_line);
 		if (ft_cycle_cmd(&data) == RETURN_EXIT)
 			break ;
 		ft_wait_for_kids(&data);
@@ -78,11 +77,28 @@ void	ft_wait_for_kids(t_data *data)
 
 void	ft_initialize(t_data *data, char **envp)
 {
+	char	*output;
+	t_envp	*tmp_envp;
+
 	g_ctrl_c = 0;
-	data->envp = ft_copy_envp(envp);
 	data->c_line = NULL;
 	data->r_line = NULL;
 	data->errnum = 0;
+	data->envp = ft_copy_envp(envp);
+	tmp_envp = ft_get_envp_element(data->envp, "PATH");
+	if (!tmp_envp)
+		ft_change_envp(data, DEFAULT_PATH);
+	tmp_envp = ft_get_envp_element(data->envp, "PWD");
+	if (!tmp_envp)
+	{
+		output = (char *) malloc(BUFFER_SIZE);
+		if (!output)
+			return ;
+		getcwd(output, BUFFER_SIZE);
+		output = ft_realloc("PWD=", output, 0, 1);
+		ft_change_envp(data, output);
+		free(output);
+	}
 }
 
 int	ft_cycle_cmd(t_data *data)

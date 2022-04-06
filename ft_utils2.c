@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:20:39 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 08:50:16 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 20:46:16 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,13 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		i++;
 	}
 	return (0);
+}
+
+void	ft_free(void *ptr)
+{
+	if (ptr)
+		free(ptr);
+	ptr = NULL;
 }
 
 /*

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 17:08:34 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:36:28 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,11 @@
 # define EXPORT "declare -x "
 # define FILE_RIGHTS 0664
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 2048
 # endif
 # ifndef DEFAULT_PATH
-#  define DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+#  define DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # endif
-
-typedef enum e_bool {
-	ERROR = -1,
-	FALSE = 0,
-	TRUE = 1
-}			t_bool;
 
 typedef enum e_return {
 	RETURN_ERROR = -1,
@@ -95,6 +89,16 @@ typedef struct s_parse {
 	char				*string[128];
 }				t_parse;
 
+typedef struct s_parser {
+	char				*tmp;
+	char				*token;
+	struct s_command	*cmd;
+	int					len;
+	int					argc;
+	int					inside_echo;
+	int					result;
+}				t_parser;
+
 int				g_ctrl_c;
 
 //ft_signals.c
@@ -146,10 +150,10 @@ char			*ft_realloc(char *s1, char *s2, int free_s1, int free_s2);
 
 //ft_utils2.c
 int				ft_pos_in_string(char *s, char c);
+char			*ft_remove_char(char *s, char c);
 int				ft_strcmp(const char *s1, const char *s2);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
-char			*ft_strnstr(const char *big, const char *little, size_t len);
-char			*ft_remove_char(char *s, char c);
+void			ft_free(void *ptr);
 
 //ft_utils3.c
 long			ft_string_to_int(const char *nptr);
@@ -158,7 +162,8 @@ void			ft_print_bits(int input);
 void			ft_write_fd_nl(int fd, char *s);
 
 //ft_parser0.c
-t_bool			ft_check_heredoc_end_term(char *s);
+void			ft_init_parser(t_parser *parser, t_data *data);
+int				ft_check_heredoc_end_term(char *s);
 void			ft_parser(t_data *data);
 int				ft_end_of_token(char *s, int *inside_echo);
 int				ft_find_end_of_token(char *s, int *inside_echo);
@@ -171,15 +176,19 @@ char			*ft_prepare_output(t_parse *check);
 char			*ft_get_next_token(char **input, t_data *data);
 
 //ft_parser2.c
-int				ft_check_cmd(t_command **cmd, int *argc, char *token, t_data *data, char *tmp);
+int				ft_check_cmd(t_data *data, t_parser *parser);
 void			ft_check_quote(char c, int *d_quote, int *s_quote);
 int				ft_len_whitespaces(const char *s);
 char			*ft_skip_whitespaces(const char *str);
 char			*ft_check_quotes_insert_var(char *input, t_data *data);
 
 //ft_parser3.c
-int				ft_do_valid_redirections(t_data *data, t_command *cmd, char *token, char **tmp, int len);
-int				ft_check_next_token(t_data *data, t_command *cmd, char *tmp);
+int				ft_do_valid_redirections(t_data *data, t_parser *parser);
+int				ft_check_next_token(t_data *data, t_parser *parser);
+int				ft_redirect_(t_data *data, t_parser *parser,
+					void (*redirect)(t_command *, char *));
+void			ft_inside_echo(t_parser *parser);
+int				ft_redirect_prepare_in_in(t_data *data, t_parser *parser);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);

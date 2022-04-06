@@ -6,41 +6,35 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 14:20:05 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:29:37 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_check_cmd(t_command **cmd, int *argc, char *token,
-	t_data *data, char *tmp)
+int	ft_check_cmd(t_data *data, t_parser *parser)
 {
-	char	*new_token;
-
-	if (token[0] == '|')
+	parser->tmp += parser->len;
+	if (parser->token[0] == '|')
 	{
-			new_token = ft_get_next_token(&tmp, data);
-			if (new_token[0] == '\0' || !ft_check_heredoc_end_term(new_token))
-			{
-				ft_print_error(*cmd, ERR_SYNTAX, new_token);
-				free(new_token);
-				return (9);
-			}
-		free(new_token);
-		(*cmd)->next = ft_create_cmd_elem();
-		*cmd = (*cmd)->next;
-		*argc = 0;
-		return (-1);
+		free(parser->token);
+		parser->token = ft_get_next_token(&parser->tmp, data);
+		if (parser->token[0] == '\0'
+			|| !ft_check_heredoc_end_term(parser->token))
+		{
+			ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
+			return (RETURN_ERROR);
+		}
+		parser->cmd->next = ft_create_cmd_elem();
+		parser->cmd = parser->cmd->next;
+		parser->cmd->argv[0] = ft_string_dup(parser->token);
+		parser->argc = 1;
+		return (RETURN_SUCCESS);
 	}
-	if (ft_strcmp(token, "<"))
-		return (1);
-	else if (ft_strcmp(token, ">"))
-		return (2);
-	else if (ft_strcmp(token, "<<"))
-		return (3);
-	else if (ft_strcmp(token, ">>"))
-		return (4);
-	return (0);
+	if (ft_strcmp(parser->token, "<") || (ft_strcmp(parser->token, ">"))
+		|| (ft_strcmp(parser->token, "<<")) || (ft_strcmp(parser->token, ">>")))
+		return (RETURN_TRUE);
+	return (RETURN_FALSE);
 }
 
 void	ft_check_quote(char c, int *d_quote, int *s_quote)

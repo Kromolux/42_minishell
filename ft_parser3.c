@@ -6,69 +6,77 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 16:07:15 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 16:52:16 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:37:56 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_do_valid_redirections(t_data *data, t_command *cmd, char *token, char **tmp, int len)
+int	ft_do_valid_redirections(t_data *data, t_parser *parser)
 {
-	if (ft_strcmp(token, "<"))
+	if (ft_strcmp(parser->token, "<"))
+		return (ft_redirect_(data, parser, ft_redirect_in));
+	else if (ft_strcmp(parser->token, ">"))
+		return (ft_redirect_(data, parser, ft_redirect_out));
+	else if (ft_strcmp(parser->token, "<<"))
+		return (ft_redirect_prepare_in_in(data, parser));
+	else if (ft_strcmp(parser->token, ">>"))
+		return (ft_redirect_(data, parser, ft_redirect_out_out));
+	else if (ft_strcmp(parser->token, "||"))
 	{
-		if (ft_check_next_token(data, cmd, *tmp + len) == RETURN_ERROR)
-			return (RETURN_ERROR);
-		*tmp += len;
-		ft_redirect_in(cmd, ft_get_next_token(tmp, data));
-	}
-	else if (ft_strcmp(token, ">"))
-	{
-		if (ft_check_next_token(data, cmd, *tmp + len) == RETURN_ERROR)
-			return (RETURN_ERROR);
-		*tmp += len;
-		ft_redirect_out(cmd, ft_get_next_token(tmp, data));
-	}
-	else if (ft_strcmp(token, "<<"))
-	{
-		if (ft_check_next_token(data, cmd, *tmp + len) == RETURN_ERROR)
-			return (RETURN_ERROR);
-		ft_set_parent_heredoc();
-		*tmp += len;
-		ft_redirect_in_in(cmd, ft_get_next_token(tmp, data));
-		ft_set_parent_interactive();
-		if (g_ctrl_c)
-		{
-			g_ctrl_c = 0;
-			ft_delete_cmd(&data->c_line);
-			return (RETURN_ERROR);
-		}
-	}
-	else if (ft_strcmp(token, ">>"))
-	{
-		if (ft_check_next_token(data, cmd, *tmp + len) == RETURN_ERROR)
-			return (RETURN_ERROR);
-		*tmp += len;
-		ft_redirect_out_out(cmd, ft_get_next_token(tmp, data));
-	}
-	else if (ft_strcmp(token, "||"))
-	{
-		ft_print_error(cmd, ERR_SYNTAX, token);
+		ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
 		return (RETURN_ERROR);
 	}
 	return (RETURN_SUCCESS);
 }
 
-int	ft_check_next_token(t_data *data, t_command *cmd, char *tmp)
+int	ft_redirect_(t_data *data, t_parser *parser,
+	void (*redirect)(t_command *, char *))
 {
-	char	*new_token;
+	if (ft_check_next_token(data, parser) == RETURN_ERROR)
+		return (RETURN_ERROR);
+	parser->tmp += parser->len;
+	redirect(parser->cmd, parser->token);
+	return (RETURN_SUCCESS);
+}
 
-	new_token = ft_get_next_token(&tmp, data);
-	if (new_token[0] == '\0' || !ft_check_heredoc_end_term(new_token))
+int	ft_check_next_token(t_data *data, t_parser *parser)
+{
+	free(parser->token);
+	parser->token = ft_get_next_token(&parser->tmp, data);
+	if (parser->token[0] == '\0' || ft_check_heredoc_end_term
+		(parser->token) == RETURN_FALSE)
 	{
-		ft_print_error(cmd, ERR_SYNTAX, new_token);
-		free(new_token);
+		ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
 		return (RETURN_ERROR);
 	}
-	free(new_token);
+	return (RETURN_SUCCESS);
+}
+
+void	ft_inside_echo(t_parser *parser)
+{
+	parser->len = ft_len_whitespaces(parser->tmp);
+	if (parser->len > 0)
+	{
+		parser->argc++;
+		parser->cmd->argv[parser->argc] = ft_string_dup(" ");
+		parser->tmp += parser->len;
+	}
+}
+
+int	ft_redirect_prepare_in_in(t_data *data, t_parser *parser)
+{
+	if (ft_check_next_token(data, parser) == RETURN_ERROR)
+		return (RETURN_ERROR);
+	ft_set_parent_heredoc();
+	parser->tmp += parser->len;
+	ft_redirect_in_in(parser->cmd, parser->token);
+	ft_set_parent_interactive();
+	if (g_ctrl_c)
+	{
+		g_ctrl_c = 0;
+		ft_delete_cmd(&data->c_line);
+		return (RETURN_ERROR);
+	}
 	return (RETURN_SUCCESS);
 }

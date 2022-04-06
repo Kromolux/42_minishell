@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 16:51:11 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:34:14 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,71 +14,57 @@
 
 void	ft_parser(t_data *data)
 {
-	char		*tmp;
-	char		*token;
-	t_command	*cmd;
-	int			len;
-	int			argc;
-	int			inside_echo;
-	int			result;
+	t_parser	parser;
 
-	inside_echo = 0;
-	result = 0;
-	argc = 0;
-	data->c_line = ft_create_cmd_elem();
-	cmd = data->c_line;
-	tmp = data->r_line;
-	tmp = ft_skip_whitespaces(tmp);
-	while (*tmp)
+	ft_init_parser(&parser, data);
+	while (*parser.tmp)
 	{
-		if (cmd->argv[argc] && cmd->argv[argc][0])
-			argc++;
-		len = ft_end_of_token(tmp, &inside_echo);
-		token = ft_get_substring(tmp, 0, len);
-		result = ft_check_cmd(&cmd, &argc, token, data, tmp + len);
-		if (result == 9)
+		if (parser.cmd->argv[parser.argc] && parser.cmd->argv[parser.argc][0])
+			parser.argc++;
+		parser.len = ft_end_of_token(parser.tmp, &parser.inside_echo);
+		parser.token = ft_get_substring(parser.tmp, 0, parser.len);
+		parser.result = ft_check_cmd(data, &parser);
+		if (parser.result == RETURN_ERROR)
 			break ;
-		if (ft_do_valid_redirections(data, cmd, token, &tmp, len) == RETURN_ERROR)
+		if (ft_do_valid_redirections(data, &parser) == RETURN_ERROR)
 			break ;
-		if (result == 0)
-			cmd->argv[argc] = ft_check_quotes_insert_var(token, data);
-		if (token)
-		{
-			free(token);
-			token = NULL;
-		}
-		if (result < 1)
-			tmp += len;
-		if (inside_echo == 0)
-			tmp = ft_skip_whitespaces(tmp);
+		if (parser.result == RETURN_FALSE)
+			parser.cmd->argv[parser.argc] = ft_check_quotes_insert_var
+				(parser.token, data);
+		ft_free((void *) parser.token);
+		if (parser.inside_echo == 0)
+			parser.tmp = ft_skip_whitespaces(parser.tmp);
 		else
-		{
-			len = ft_len_whitespaces(tmp);
-			if (len > 0)
-			{
-				argc++;
-				cmd->argv[argc] = ft_string_dup(" ");
-				tmp += len;
-			}
-		}
-		if (argc == 0 && ft_strcmp(cmd->argv[0], "echo"))
-			inside_echo = 1;
-
+			ft_inside_echo(&parser);
+		if (parser.argc == 0 && ft_strcmp(parser.cmd->argv[0], "echo"))
+			parser.inside_echo = 1;
 	}
 }
 
-t_bool	ft_check_heredoc_end_term(char *s)
+void	ft_init_parser(t_parser *parser, t_data *data)
+{
+	data->c_line = ft_create_cmd_elem();
+	parser->inside_echo = 0;
+	parser->result = 0;
+	parser->argc = 0;
+	parser->cmd = data->c_line;
+	parser->tmp = data->r_line;
+	parser->tmp = ft_skip_whitespaces(parser->tmp);
+}
+
+int	ft_check_heredoc_end_term(char *s)
 {
 	int	i;
 
 	i = 0;
 	while (s[i])
 	{
-		if ((s[i] < 'a' || s[i] > 'z') && (s[i] < 'A' || s[i] > 'Z') && (s[i] < '0' || s[i] > '9'))
-			return (FALSE);
+		if ((s[i] < 'a' || s[i] > 'z') && (s[i] < 'A'
+				|| s[i] > 'Z') && (s[i] < '0' || s[i] > '9'))
+			return (RETURN_FALSE);
 		i++;
 	}
-	return (TRUE);
+	return (RETURN_TRUE);
 }
 
 int	ft_end_of_token(char *s, int *inside_echo)
