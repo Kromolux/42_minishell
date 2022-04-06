@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/05 15:34:09 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/06 16:23:47 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,8 @@ HEADERFILE	:=	minishell.h
 
 SRC			:=	ft_minishell.c \
 				ft_error0.c \
+				ft_error1.c \
+				ft_error2.c \
 				ft_utils0.c \
 				ft_utils1.c \
 				ft_utils2.c \
@@ -25,6 +27,7 @@ SRC			:=	ft_minishell.c \
 				ft_parser0.c \
 				ft_parser1.c \
 				ft_parser2.c \
+				ft_parser3.c \
 				ft_commands0.c \
 				ft_commands1.c \
 				ft_env0.c \
@@ -52,10 +55,10 @@ CFLAGS		:=	-Wall -Wextra -Werror -g
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L/usr/include -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -L/usr/local/opt/readline/lib -lreadline -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I/usr/local/opt/readline/include/ -c $< -o $@
 
 
 clean:

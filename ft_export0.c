@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:02:37 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 13:21:49 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:54:45 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ int	ft_export(t_data *data, t_command *cmd)
 {
 	int	i;
 
-	//if (cmd != data->c_line)
-	//	return (0);
 	i = 1;
 	if (!cmd->argv[1])
 		ft_var_printing(data);
@@ -25,14 +23,13 @@ int	ft_export(t_data *data, t_command *cmd)
 	{
 		if (!ft_check_validity(cmd->argv[i]))
 		{
-			cmd->errnum = 1;
-			ft_print_error(cmd, 999, cmd->argv[i]);
+			ft_print_error(cmd, ERR_NOT_VALID, cmd->argv[i]);
 		}
-		else
+		else if (cmd == data->c_line)
 			ft_change_envp(data, cmd->argv[i]);
 		i++;
 	}
-	return (0);
+	return (RETURN_SUCCESS);
 }
 
 void	ft_change_envp(t_data *data, char *var)
@@ -79,9 +76,8 @@ void	ft_var_printing(t_data *data)
 	tmp = copy;
 	while (tmp)
 	{
-		write(data->c_line->re->out, EXPORT, ft_strlen(EXPORT));
-		write(data->c_line->re->out, tmp->var, ft_strlen(tmp->var));
-		write(data->c_line->re->out, "\n", 1);
+		ft_write_fd(data->c_line->re->out, EXPORT);
+		ft_write_fd_nl(data->c_line->re->out, tmp->var);
 		tmp = tmp->next;
 	}
 	ft_delete_list(&copy);

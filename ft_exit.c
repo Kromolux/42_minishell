@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 11:00:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 13:04:19 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:16:12 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,22 @@ int	ft_exit(t_command *cmd, t_data *data)
 	i = 0;
 	while (cmd->argv[i])
 		i++;
-	if (i > 2)
-		return (ft_print_error(cmd, 777, NULL));
 	if (i != 1 && !ft_is_number_only(cmd->argv[1]))
-		return (ft_print_error(cmd, 888, NULL));
+	{
+		data->errnum = 255;
+		ft_write_fd(cmd->re->err, "exit\n");
+		ft_print_error(cmd, ERR_NUMERIC, cmd->argv[1]);
+		return (RETURN_EXIT);
+	}
+	if (i > 2)
+	{
+		ft_write_fd(cmd->re->err, "exit\n");
+		return (ft_print_error(cmd, ERR_TOO_ARG, NULL));
+	}
 	if (i == 2)
-		cmd->errnum = (unsigned char) ft_string_to_int(cmd->argv[1]);
-	return (2);
+		data->errnum = (unsigned char) ft_string_to_int(cmd->argv[1]);
+	ft_write_fd(cmd->re->err, "exit\n");
+	return (RETURN_EXIT);
 }
 
 int	ft_is_number_only(char *input)

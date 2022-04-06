@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 09:08:35 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 12:59:58 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	ft_build_in_exe(t_command *cmd, t_data *data)
 		return (ft_echo(cmd));
 	else if (ft_strcmp(cmd->argv[0], "error_codes"))
 		return (ft_error_codes(cmd));
-	return (-1);
+	return (RETURN_FALSE);
 }
 
 static void	ft_delete_redirections(t_command *cmd)
@@ -97,7 +97,7 @@ void	ft_print_commands(t_command *commands)
 	while (commands)
 	{
 		i = 0;
-		while (commands->argv && commands->argv[i])
+		while (commands->argv[i])
 		{
 			printf("argc=%i [%s]\n", i, commands->argv[i]);
 			i++;

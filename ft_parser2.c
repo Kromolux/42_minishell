@@ -6,16 +6,27 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 17:03:32 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 14:20:05 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_check_cmd(t_command **cmd, int *argc, char *token)
+int	ft_check_cmd(t_command **cmd, int *argc, char *token,
+	t_data *data, char *tmp)
 {
+	char	*new_token;
+
 	if (token[0] == '|')
 	{
+			new_token = ft_get_next_token(&tmp, data);
+			if (new_token[0] == '\0' || !ft_check_heredoc_end_term(new_token))
+			{
+				ft_print_error(*cmd, ERR_SYNTAX, new_token);
+				free(new_token);
+				return (9);
+			}
+		free(new_token);
 		(*cmd)->next = ft_create_cmd_elem();
 		*cmd = (*cmd)->next;
 		*argc = 0;

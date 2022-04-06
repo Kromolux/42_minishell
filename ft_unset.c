@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:03:13 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 13:21:55 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:54:36 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@ int	ft_unset(t_data *data, t_command *cmd)
 	t_envp	*tmp;
 	int		i;
 
-	//if (cmd != data->c_line)
-	//	return (0);
 	i = 1;
 	while (cmd->argv[i])
 	{
 		if (!ft_check_validity(cmd->argv[i]))
 		{
-			cmd->errnum = 1;
-			ft_print_error(cmd, 999, cmd->argv[i]);
+			ft_print_error(cmd, ERR_NOT_VALID, cmd->argv[i]);
 		}
-		tmp = ft_get_envp_element(data->envp, cmd->argv[i]);
-		if (tmp)
-			ft_delete_envp_elem(&data->envp, tmp);
+		else if (cmd == data->c_line)
+		{
+			tmp = ft_get_envp_element(data->envp, cmd->argv[i]);
+			if (tmp)
+				ft_delete_envp_elem(&data->envp, tmp);
+		}
 		i++;
 	}
-	return (0);
+	return (RETURN_SUCCESS);
 }
 
 void	ft_delete_envp_elem(t_envp **first, t_envp *to_del)

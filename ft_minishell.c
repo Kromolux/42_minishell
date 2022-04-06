@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 17:04:50 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 13:01:51 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(data.r_line) > 0)
 			add_history(data.r_line);
 		ft_parser(&data);
-		ft_print_commands(data.c_line);
-		if (ft_cycle_cmd(&data))
+		//ft_print_commands(data.c_line);
+		if (ft_cycle_cmd(&data) == RETURN_EXIT)
 			break ;
 		ft_wait_for_kids(&data);
 		free(data.r_line);
@@ -99,17 +99,13 @@ int	ft_cycle_cmd(t_data *data)
 			if (cmd->next)
 				ft_create_pipe(cmd);
 			result = ft_build_in_exe(cmd, data);
-			if (result == 2)
-				return (1);
-			if (result == -1)
-			{
-				cmd->errnum = ft_do_execve(cmd, data);
-				if (cmd->errnum == 127)
-					ft_print_error(cmd, 127, NULL);
-			}
+			if (result == RETURN_EXIT)
+				return (RETURN_EXIT);
+			if (result == RETURN_FALSE)
+				ft_do_execve(cmd, data);
 		}
 		ft_close_pipe(cmd);
 		cmd = cmd->next;
 	}
-	return (0);
+	return (RETURN_SUCCESS);
 }

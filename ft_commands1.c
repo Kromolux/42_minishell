@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:00:06 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 13:14:45 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 15:50:04 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_first_cmd(t_command *cmd, t_data *data)
 	return (1);
 }
 
-t_command		*ft_last_cmd(t_command *cmd)
+t_command	*ft_last_cmd(t_command *cmd)
 {
 	t_command	*tmp;
 

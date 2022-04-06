@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 16:51:10 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:08:34 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,29 @@
 # ifndef DEFAULT_PATH
 #  define DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # endif
+
+typedef enum e_bool {
+	ERROR = -1,
+	FALSE = 0,
+	TRUE = 1
+}			t_bool;
+
+typedef enum e_return {
+	RETURN_ERROR = -1,
+	RETURN_SUCCESS = 0,
+	RETURN_FALSE = 1,
+	RETURN_TRUE = 2,
+	RETURN_EXIT = 3
+}			t_return;
+
+typedef enum e_err_handl {
+	ERR_NOT_VALID = 255,
+	ERR_NUMERIC,
+	ERR_TOO_ARG,
+	ERR_SYNTAX,
+	ERR_FILE_CMD,
+	ERR_CD_FOLDER
+}			t_err_handl;
 
 typedef struct s_redirect {
 	int					in;
@@ -96,6 +119,17 @@ void			ft_clear_mem(t_data *data);
 int				ft_print_error(t_command *cmd, int errnum, char *filename);
 int				ft_error_codes(t_command *cmd);
 
+//ft_error1.c
+void			ft_err_file_cmd(t_command *cmd);
+void			ft_err_syntax(t_command *cmd, char *token);
+void			ft_err_not_valid(t_command *cmd, char *token);
+void			ft_err_numeric(t_command *cmd, char *token);
+void			ft_err_too_arg(t_command *cmd);
+
+//ft_error2.c
+void			ft_err_cd_folder(t_command *cmd, char *token);
+void			ft_err_else(t_command *cmd, int errnum);
+
 //ft_utils0.c
 size_t			ft_strlen(const char *s);
 void			*ft_memset(void *s, int c, size_t n);
@@ -124,7 +158,7 @@ void			ft_print_bits(int input);
 void			ft_write_fd_nl(int fd, char *s);
 
 //ft_parser0.c
-int				ft_check_heredoc_end_term(char *s);
+t_bool			ft_check_heredoc_end_term(char *s);
 void			ft_parser(t_data *data);
 int				ft_end_of_token(char *s, int *inside_echo);
 int				ft_find_end_of_token(char *s, int *inside_echo);
@@ -137,11 +171,15 @@ char			*ft_prepare_output(t_parse *check);
 char			*ft_get_next_token(char **input, t_data *data);
 
 //ft_parser2.c
-int				ft_check_cmd(t_command **cmd, int *argc, char *token);
+int				ft_check_cmd(t_command **cmd, int *argc, char *token, t_data *data, char *tmp);
 void			ft_check_quote(char c, int *d_quote, int *s_quote);
 int				ft_len_whitespaces(const char *s);
 char			*ft_skip_whitespaces(const char *str);
 char			*ft_check_quotes_insert_var(char *input, t_data *data);
+
+//ft_parser3.c
+int				ft_do_valid_redirections(t_data *data, t_command *cmd, char *token, char **tmp, int len);
+int				ft_check_next_token(t_data *data, t_command *cmd, char *tmp);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);

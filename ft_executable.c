@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 15:32:28 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 15:49:44 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	cmd_path = ft_check_path(cmd->argv[0], paths);
 	ft_free_char_array(paths);
 	if (!cmd_path)
-		return (127);
+		return (ft_print_error(cmd, ERR_FILE_CMD, NULL));
 	if (cmd->re->in == -1)
 	{
 		free(cmd_path);

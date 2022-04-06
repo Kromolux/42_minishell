@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 11:23:54 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 16:50:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 14:19:29 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ft_print_bits(int input)
 	i = 31;
 	while (i >= 0)
 	{
-		c = (( (input >> i) & 1) + '0');
+		c = (((input >> i) & 1) + '0');
 		write(1, &c, 1);
 		i--;
 	}

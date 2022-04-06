@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 15:28:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 11:20:47 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 13:07:35 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	ft_echo(t_command *cmd)
 	}
 	if (new_line)
 		write(cmd->re->out, "\n", 1);
-	return (0);
+	return (RETURN_SUCCESS);
 }
 
 int	ft_valid_option(char *input)

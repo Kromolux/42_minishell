@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 17:11:28 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 16:51:11 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,82 +35,18 @@ void	ft_parser(t_data *data)
 			argc++;
 		len = ft_end_of_token(tmp, &inside_echo);
 		token = ft_get_substring(tmp, 0, len);
-		if (ft_strcmp(token, "|"))
-		{
-			tmp += len;
-			free(token);
-			token = ft_get_next_token(&tmp, data);
-			if (token[0] == '\0')
-			{
-				ft_print_error(cmd, 1024, token);
-				break ;
-			}
-		}
-		result = ft_check_cmd(&cmd, &argc, token);
-		if (ft_strcmp(token, "<"))
-		{
-			tmp += len;
-			free(token);
-			token = ft_get_next_token(&tmp, data);
-			if (token[0] == '\0')
-			{
-				ft_print_error(cmd, 1024, token);
-				break ;
-			}
-			ft_redirect_in(cmd, ft_get_next_token(&tmp, data));
-		}
-		else if (ft_strcmp(token, ">"))
-		{
-			tmp += len;
-			free(token);
-			token = ft_get_next_token(&tmp, data);
-			if (token[0] == '\0')
-			{
-				ft_print_error(cmd, 1024, token);
-				break ;
-			}
-			ft_redirect_out(cmd, ft_get_next_token(&tmp, data));
-		}
-		else if (ft_strcmp(token, "<<"))
-		{
-			tmp += len;
-			free(token);
-			token = ft_get_next_token(&tmp, data);
-			if (token[0] == '\0' || !ft_check_heredoc_end_term(token))
-			{
-				ft_print_error(cmd, 1024, token);
-				break ;
-			}
-			ft_set_parent_heredoc();
-			ft_redirect_in_in(cmd, token);
-			ft_set_parent_interactive();
-			if (g_ctrl_c)
-			{
-				g_ctrl_c = 0;
-				ft_delete_cmd(&data->c_line);
-				break ;
-			}
-		}
-		else if (ft_strcmp(token, ">>"))
-		{
-			tmp += len;
-			free(token);
-			token = ft_get_next_token(&tmp, data);
-			if (token[0] == '\0' || !ft_check_heredoc_end_term(token))
-			{
-				ft_print_error(cmd, 1024, token);
-				break ;
-			}
-			ft_redirect_out_out(cmd, ft_get_next_token(&tmp, data));
-		}
-		else if (ft_strcmp(token, "||"))
-		{
-			ft_print_error(cmd, 1024, token);
+		result = ft_check_cmd(&cmd, &argc, token, data, tmp + len);
+		if (result == 9)
 			break ;
-		}
+		if (ft_do_valid_redirections(data, cmd, token, &tmp, len) == RETURN_ERROR)
+			break ;
 		if (result == 0)
 			cmd->argv[argc] = ft_check_quotes_insert_var(token, data);
-		free(token);
+		if (token)
+		{
+			free(token);
+			token = NULL;
+		}
 		if (result < 1)
 			tmp += len;
 		if (inside_echo == 0)
@@ -131,7 +67,7 @@ void	ft_parser(t_data *data)
 	}
 }
 
-int	ft_check_heredoc_end_term(char *s)
+t_bool	ft_check_heredoc_end_term(char *s)
 {
 	int	i;
 
@@ -139,10 +75,10 @@ int	ft_check_heredoc_end_term(char *s)
 	while (s[i])
 	{
 		if ((s[i] < 'a' || s[i] > 'z') && (s[i] < 'A' || s[i] > 'Z') && (s[i] < '0' || s[i] > '9'))
-			return (0);
+			return (FALSE);
 		i++;
 	}
-	return (1);
+	return (TRUE);
 }
 
 int	ft_end_of_token(char *s, int *inside_echo)

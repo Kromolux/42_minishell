@@ -6,59 +6,31 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 17:49:25 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 16:05:16 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:08:45 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_print_error(t_command *cmd, int errnum, char *filename)
+int	ft_print_error(t_command *cmd, int errnum, char *token)
 {
 	ft_write_fd(cmd->re->err, PROMPT);
-	if (filename)
-		ft_write_fd(cmd->re->err, filename);
+	ft_write_fd(cmd->re->err, cmd->argv[0]);
+	if (errnum == ERR_FILE_CMD)
+		ft_err_file_cmd(cmd);
+	else if (errnum == ERR_SYNTAX)
+		ft_err_syntax(cmd, token);
+	else if (errnum == ERR_NOT_VALID)
+		ft_err_not_valid(cmd, token);
+	else if (errnum == ERR_NUMERIC)
+		ft_err_numeric(cmd, token);
+	else if (errnum == ERR_TOO_ARG)
+		ft_err_too_arg(cmd);
+	else if (errnum == ERR_CD_FOLDER)
+		ft_err_cd_folder(cmd, token);
 	else
-		ft_write_fd(cmd->re->err, cmd->argv[0]);
-	if (errnum == 127)
-	{
-		if (ft_char_in_str(cmd->argv[0], '/'))
-			ft_write_fd(cmd->re->err, ": No such file or directory\n");
-		else
-			ft_write_fd(cmd->re->err, ": command not found\n");
-	}
-	else if (errnum == 1024)
-	{
-		ft_write_fd(cmd->re->err, "syntax error near unexpected token\n");
-		cmd->errnum = 2;
-	}
-	else if (errnum == 999)
-	{
-		ft_write_fd(cmd->re->err, ": ");
-		ft_write_fd(cmd->re->err, cmd->argv[1]);
-		ft_write_fd(cmd->re->err, ": not a valid identifier\n");
-		cmd->errnum = 1;
-	}
-	else if (errnum == 888)
-	{
-		ft_write_fd(cmd->re->err, ": ");
-		ft_write_fd(cmd->re->err, cmd->argv[1]);
-		ft_write_fd(cmd->re->err, ": numeric argument required\n");
-		cmd->errnum = 2;
-	}
-	else if (errnum == 777)
-	{
-		ft_write_fd(cmd->re->err, ": ");
-		ft_write_fd(cmd->re->err, cmd->argv[1]);
-		ft_write_fd(cmd->re->err, ": too many arguments\n");
-		cmd->errnum = 2;
-	}
-	else
-	{
-		ft_write_fd(cmd->re->err, ": ");
-		ft_write_fd(cmd->re->err, strerror(errnum));
-		write(cmd->re->err, "\n", 1);
-	}
-	return (0);
+		ft_err_else(cmd, errnum);
+	return (RETURN_ERROR);
 }
 
 int	ft_error_codes(t_command *cmd)
@@ -69,14 +41,13 @@ int	ft_error_codes(t_command *cmd)
 	i = 0;
 	while (i < 255)
 	{
-		write(cmd->re->out, "error code ", 11);
+		ft_write_fd(cmd->re->out, "error code ");
 		tmp = ft_int_to_string(i);
 		tmp = ft_realloc(tmp, " ", 1, 0);
-		write(cmd->re->out, tmp, ft_strlen(tmp));
-		write(cmd->re->out, strerror(i), ft_strlen(strerror(i)));
-		write(cmd->re->out, "\n", 1);
+		ft_write_fd(cmd->re->out, tmp);
+		ft_write_fd_nl(cmd->re->out, strerror(i));
 		i++;
 		free(tmp);
 	}
-	return (0);
+	return (RETURN_SUCCESS);
 }

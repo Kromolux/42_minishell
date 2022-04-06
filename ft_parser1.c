@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 11:19:23 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 17:48:27 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 	tmp = ft_get_var(&input[check->i + 1]);
 	if (ft_strncmp(tmp, "?", 1) == 0)
 		check->string[check->i_string] = ft_int_to_string((long) data->errnum);
+	else if (ft_strncmp(&input[1], "\0", 1) == 0
+		|| ft_strncmp(&input[1], "\'", 1) == 1
+		|| ft_strncmp(&input[1], "\"", 1) == 1 )
+		check->string[check->i_string] = ft_string_dup("$");
 	else
 		check->string[check->i_string] = ft_string_dup
 			(ft_getenv(tmp, data->envp));

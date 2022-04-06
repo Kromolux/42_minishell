@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:33:32 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 16:38:19 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/06 15:49:34 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	ft_set_parent_active(void)
 	signal(SIGQUIT, &ft_parent_active_sigquit);
 }
 
+	//signal(SIGINT, &ft_parent_active_sigint);
+	//signal(SIGQUIT, SIG_DFL);
 void	ft_set_parent_heredoc(void)
 {
 	struct sigaction	response;
@@ -32,8 +34,6 @@ void	ft_set_parent_heredoc(void)
 	response.sa_flags = SA_SIGINFO;
 	response.sa_handler = &ft_parent_active_sigint;
 	sigaction(SIGINT, &response, NULL);
-	//signal(SIGINT, &ft_parent_active_sigint);
-	//signal(SIGQUIT, SIG_DFL);
 	signal(SIGQUIT, SIG_IGN);
 }
 
