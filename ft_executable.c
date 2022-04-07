@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 15:49:44 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:01:45 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 		return (ft_print_error(cmd, errno, NULL));
 	if (cmd->pid == 0)
 		ft_child_process(cmd, data, cmd_path);
-	free(cmd_path);
+	free((void *) cmd_path);
 	return (0);
 }
 
@@ -49,7 +49,7 @@ void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 	ft_free_char_array(envp);
 	ft_delete_list(&data->envp);
 	ft_delete_cmd(&data->c_line);
-	free(cmd_path);
+	free((void *) cmd_path);
 	exit(0);
 }
 
@@ -91,7 +91,7 @@ char	*ft_check_path(char *cmd, char **paths)
 		test_path = ft_realloc(test_path, cmd, 1, 0);
 		if (access(test_path, F_OK) == 0)
 			return (test_path);
-		free(test_path);
+		free((void *) test_path);
 		i++;
 	}
 	return (NULL);

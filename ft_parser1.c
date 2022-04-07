@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 22:29:55 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 09:56:17 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 	if (check->i > 0)
 	{
 		check->string[check->i_string] = ft_get_substring
-			(input, 0, check->i - check->start);
+			(input, check->start, check->i - check->start);
 		check->i_string++;
 	}
 	check->start = check->i + 1;
@@ -43,7 +43,7 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 	if (check->i > 0)
 	{
 		check->string[check->i_string] = ft_get_substring
-			(input, 0, check->i - check->start);
+			(input, check->start, check->i - check->start);
 		check->i_string++;
 	}
 	check->start = check->i + 1;
@@ -82,7 +82,7 @@ void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 	check->i_string++;
 	check->i += ft_strlen(tmp);
 	check->start = check->i + 1;
-	free(tmp);
+	free((void *) tmp);
 }
 
 char	*ft_prepare_output(t_parse *check)
@@ -111,7 +111,7 @@ char	*ft_get_next_token(char **input, t_data *data)
 	len = ft_end_of_token(*input, NULL);
 	tmp = ft_get_substring(*input, 0, len);
 	output = ft_check_quotes_insert_var(tmp, data);
-	free(tmp);
+	free((void *) tmp);
 	*input += len;
 	return (output);
 }

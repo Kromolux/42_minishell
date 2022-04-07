@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 22:29:37 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 09:55:58 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_check_cmd(t_data *data, t_parser *parser)
 	parser->tmp += parser->len;
 	if (parser->token[0] == '|')
 	{
-		free(parser->token);
+		free((void *) parser->token);
 		parser->token = ft_get_next_token(&parser->tmp, data);
 		if (parser->token[0] == '\0'
 			|| !ft_check_heredoc_end_term(parser->token))
@@ -83,9 +83,9 @@ char	*ft_check_quotes_insert_var(char *input, t_data *data)
 	{
 		if (input[check.i] == '\"')
 			ft_inside_d_quote(&check, input, data);
-		if (input[check.i] == '\'')
+		else if (input[check.i] == '\'')
 			ft_inside_s_quote(&check, input);
-		if (input[check.i] == '$')
+		else if (input[check.i] == '$')
 			ft_found_dollar(&check, input, data);
 		check.i++;
 	}

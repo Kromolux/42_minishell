@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/06 16:23:47 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/07 14:24:47 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC			:=	ft_minishell.c \
 				ft_utils1.c \
 				ft_utils2.c \
 				ft_utils3.c \
+				ft_utils4.c \
 				ft_parser0.c \
 				ft_parser1.c \
 				ft_parser2.c \

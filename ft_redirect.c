@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:13:29 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 16:33:39 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 10:11:05 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	ft_redirect_in_in(t_command *cmd, char *end_term)
 	if (cmd->re->in > 2)
 		close(cmd->re->in);
 	ft_heredoc(fd[1], end_term);
-	free(end_term);
 	cmd->re->in = fd[0];
 }
 
@@ -72,9 +71,9 @@ void	ft_heredoc(int fd_out, char *end_term)
 			signal = 1;
 		else
 			signal = 0;
-		free(user_input);
+		free((void *) user_input);
 	}
-	free(tmp);
-	free(user_input);
+	free((void *) tmp);
+	free((void *) user_input);
 	close(fd_out);
 }

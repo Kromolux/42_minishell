@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 12:59:58 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 14:01:56 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ void	ft_delete_cmd(t_command **commands)
 	{
 		tmp = *commands;
 		*commands = (*commands)->next;
-		free(tmp->cmd);
+		free((void *) tmp->cmd);
 		tmp->cmd = NULL;
 		i = 0;
 		while (tmp && tmp->argv[i])
 		{
-			free(tmp->argv[i]);
+			free((void *) tmp->argv[i]);
 			tmp->argv[i] = NULL;
 			i++;
 		}
 		ft_delete_redirections(tmp);
-		free(tmp);
+		free((void *) tmp);
 		tmp = NULL;
 	}
 }
@@ -61,7 +61,7 @@ int	ft_build_in_exe(t_command *cmd, t_data *data)
 	if (ft_strcmp(cmd->argv[0], "exit"))
 		return (ft_exit(cmd, data));
 	else if (ft_strcmp(cmd->argv[0], "pwd"))
-		return (ft_pwd(cmd));
+		return (ft_pwd(data, cmd));
 	else if (ft_strcmp(cmd->argv[0], "env"))
 		return (ft_env(data, cmd));
 	else if (ft_strcmp(cmd->argv[0], "export"))
@@ -85,7 +85,7 @@ static void	ft_delete_redirections(t_command *cmd)
 	{
 		re_tmp = cmd->re;
 		cmd->re = cmd->re->next;
-		free(re_tmp);
+		free((void *) re_tmp);
 		re_tmp = NULL;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 22:36:28 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 14:25:09 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define EXPORT "declare -x "
 # define FILE_RIGHTS 0664
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 2048
+#  define BUFFER_SIZE 4096
 # endif
 # ifndef DEFAULT_PATH
 #  define DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -78,6 +78,7 @@ typedef struct s_data {
 	struct s_command	*c_line;
 	char				*r_line;
 	int					errnum;
+	char				*pwd;
 	struct sigaction	response;
 	struct sigaction	child;
 }				t_data;
@@ -161,6 +162,9 @@ void			ft_write_fd(int fd, char *s);
 void			ft_print_bits(int input);
 void			ft_write_fd_nl(int fd, char *s);
 
+//ft_utils4.c
+int				ft_last_pos_in_string(char *s, char c);
+
 //ft_parser0.c
 void			ft_init_parser(t_parser *parser, t_data *data);
 int				ft_check_heredoc_end_term(char *s);
@@ -239,7 +243,7 @@ int				ft_unset(t_data *data, t_command *cmd);
 void			ft_delete_envp_elem(t_envp **first, t_envp *to_del);
 
 //ft_pwd.c
-int				ft_pwd(t_command *cmd);
+int				ft_pwd(t_data *data, t_command *cmd);
 
 //ft_echo.c
 int				ft_echo(t_command *cmd);

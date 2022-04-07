@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:02:37 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 17:54:45 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:00:43 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	ft_change_envp(t_data *data, char *var)
 	tmp = ft_get_envp_element(data->envp, var);
 	if (tmp)
 	{
-		free(tmp->var);
+		free((void *) tmp->var);
 		tmp->var = ft_string_dup(var);
 	}
 	else
@@ -51,7 +51,7 @@ int	ft_check_validity(char *argv)
 	int	i;
 
 	i = 0;
-	if (argv[0] >= '0' && argv[0] <= '9')
+	if ((argv[0] >= '0' && argv[0] <= '9') || argv[0] == '=')
 		return (0);
 	while (argv[i] && argv[i] != '=')
 	{

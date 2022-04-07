@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 11:00:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 17:16:12 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 07:22:12 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	ft_exit(t_command *cmd, t_data *data)
 {
 	int	i;
 
-	if (cmd != data->c_line)
+	if (cmd != data->c_line || data->c_line->next)
 		return (0);
 	i = 0;
 	while (cmd->argv[i])

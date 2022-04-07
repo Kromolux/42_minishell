@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 17:49:25 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 17:08:45 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:02:19 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	ft_error_codes(t_command *cmd)
 		ft_write_fd(cmd->re->out, tmp);
 		ft_write_fd_nl(cmd->re->out, strerror(i));
 		i++;
-		free(tmp);
+		free((void *) tmp);
 	}
 	return (RETURN_SUCCESS);
 }

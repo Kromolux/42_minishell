@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 11:23:54 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 14:19:29 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 17:15:08 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	ft_write_fd(int fd, char *s)
 
 void	ft_write_fd_nl(int fd, char *s)
 {
-	write(fd, s, ft_strlen(s));
+	ft_write_fd(fd, s);
 	write(fd, "\n", 1);
 }
 

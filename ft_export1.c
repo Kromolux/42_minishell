@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:57:11 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/03/28 20:57:25 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:00:30 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	ft_add_quotes(t_envp *envp)
 			ft_copy(&new_value[len + 1], &tmp->var[len], 0);
 			len = ft_strlen(new_value);
 			ft_copy(&new_value[len], "\"", 0);
-			free(tmp->var);
+			free((void *) tmp->var);
 			tmp->var = new_value;
 		}
 		tmp = tmp->next;

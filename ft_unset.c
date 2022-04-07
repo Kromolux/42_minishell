@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:03:13 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 17:54:36 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 07:56:42 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ void	ft_delete_envp_elem(t_envp **first, t_envp *to_del)
 	tmp = *first;
 	while (tmp && tmp != to_del && tmp->next != to_del)
 		tmp = tmp->next;
-	free(to_del->var);
+	free((void *) to_del->var);
 	if (*first == to_del)
 		*first = to_del->next;
 	else
 		tmp->next = to_del->next;
-	free(to_del);
+	free((void *) to_del);
 }

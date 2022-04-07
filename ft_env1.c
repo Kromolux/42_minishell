@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:25:14 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 20:08:51 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:02:40 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,11 @@ t_envp	*ft_get_envp_element(t_envp *lst, char *var)
 		var_name = ft_get_var(var);
 		if (ft_str_var_cmp(var_name, tmp->var))
 		{
-			free(var_name);
+			free((void *) var_name);
 			return (tmp);
 		}
 		if (var_name)
-			free(var_name);
+			free((void *) var_name);
 		tmp = tmp->next;
 	}
 	return (NULL);

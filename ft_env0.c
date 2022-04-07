@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 18:41:59 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 08:37:15 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 08:03:08 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void	ft_delete_list(t_envp **lst)
 	{
 		tmp = *lst;
 		*lst = (*lst)->next;
-		free(tmp->var);
-		free(tmp);
+		free((void *) tmp->var);
+		free((void *) tmp);
 	}
 	*lst = NULL;
 }

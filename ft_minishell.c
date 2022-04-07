@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 22:30:47 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 17:17:04 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_cycle_cmd(&data) == RETURN_EXIT)
 			break ;
 		ft_wait_for_kids(&data);
-		free(data.r_line);
+		free((void *) data.r_line);
 		ft_delete_cmd(&data.c_line);
 	}
 	ft_clear_mem(&data);
@@ -44,8 +44,9 @@ void	ft_clear_mem(t_data *data)
 	if (data->c_line)
 		ft_delete_cmd(&data->c_line);
 	rl_clear_history();
+	free((void *) data->pwd);
 	if (data->r_line)
-		free(data->r_line);
+		free((void *) data->r_line);
 	else
 		ft_write_fd(STDOUT_FILENO, "exit\n");
 }
@@ -97,8 +98,10 @@ void	ft_initialize(t_data *data, char **envp)
 		getcwd(output, BUFFER_SIZE);
 		output = ft_realloc("PWD=", output, 0, 1);
 		ft_change_envp(data, output);
-		free(output);
+		data->pwd = output;
 	}
+	else
+		data->pwd = ft_string_dup(tmp_envp->var);
 }
 
 int	ft_cycle_cmd(t_data *data)

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 13:44:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/05 08:01:29 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 07:53:30 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static char	*ft_gnl_handling(char *buffer, int fd, char *output)
 		read_result = read(fd, (void *) buffer, BUFFER_SIZE);
 		if (read_result == -1 || (read_result == 0 && output[0] == '\0'))
 		{
-			free(output);
+			free((void *) output);
 			return (NULL);
 		}
 		buffer[read_result] = '\0';
