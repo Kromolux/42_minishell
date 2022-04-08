@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 16:07:15 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 15:56:13 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 09:09:56 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	ft_redirect_(t_data *data, t_parser *parser,
 int	ft_check_next_token(t_data *data, t_parser *parser)
 {
 	free(parser->token);
-	parser->token = ft_get_next_token(&parser->tmp, data);
+	parser->token = ft_get_next_token(parser, data);
 	if (parser->token[0] == '\0' || ft_check_heredoc_end_term
 		(parser->token) == RETURN_FALSE)
 	{
@@ -65,14 +65,16 @@ void	ft_inside_echo(t_parser *parser)
 
 int	ft_redirect_prepare_in_in(t_data *data, t_parser *parser)
 {
+	int	result;
+
 	if (ft_check_next_token(data, parser) == RETURN_ERROR)
 		return (RETURN_ERROR);
 	ft_set_parent_heredoc();
-	ft_redirect_in_in(parser->cmd, parser->token);
+	result = ft_redirect_in_in(parser->cmd, parser->token);
 	ft_set_parent_interactive();
-	if (g_ctrl_c)
+	if (result == RETURN_ERROR)
 	{
-		g_ctrl_c = 0;
+		data->errnum = 1;
 		ft_delete_cmd(&data->c_line);
 		return (RETURN_ERROR);
 	}

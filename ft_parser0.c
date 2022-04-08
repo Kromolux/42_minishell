@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 22:34:14 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 08:35:09 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_parser(t_data *data)
 			break ;
 		if (parser.result == RETURN_FALSE)
 			parser.cmd->argv[parser.argc] = ft_check_quotes_insert_var
-				(parser.token, data);
+				(&parser, data);
 		ft_free((void *) parser.token);
 		if (parser.inside_echo == 0)
 			parser.tmp = ft_skip_whitespaces(parser.tmp);

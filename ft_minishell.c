@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 17:17:04 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 09:10:23 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void	ft_initialize(t_data *data, char **envp)
 	char	*output;
 	t_envp	*tmp_envp;
 
-	g_ctrl_c = 0;
 	data->c_line = NULL;
 	data->r_line = NULL;
 	data->errnum = 0;

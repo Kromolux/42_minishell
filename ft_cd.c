@@ -6,12 +6,13 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 11:12:11 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 17:20:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 21:46:11 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	ft_absolute_path(t_data *data, t_command *cmd);
 static void	ft_cd_relative_path(t_data *data, t_command *cmd);
 static char	*ft_cd_add_folder(char *path, char *folder);
 static char	*ft_cd_remove_folder(char *path);
@@ -19,7 +20,6 @@ static char	*ft_cd_remove_folder(char *path);
 int	ft_cd(t_data *data, t_command *cmd)
 {
 	char		*old_pwd;
-	int			len;
 	struct stat	path_check;
 
 	if (!cmd->argv[1])
@@ -31,18 +31,24 @@ int	ft_cd(t_data *data, t_command *cmd)
 		chdir(cmd->argv[1]);
 		old_pwd = ft_realloc("OLDPWD=", ft_getenv("PWD", data->envp), 0, 0);
 		ft_change_envp(data, old_pwd);
+		free(old_pwd);
 		if (cmd->argv[1][0] == '/')
-		{
-			data->pwd = ft_realloc("PWD=", cmd->argv[1], 0, 0);
-			len = ft_strlen(data->pwd) - 1;
-			if (data->pwd[len] == '/')
-				data->pwd[len] = '\0';
-		}
+			ft_absolute_path(data, cmd);
 		else
 			ft_cd_relative_path(data, cmd);
 		ft_change_envp(data, data->pwd);
 	}
 	return (RETURN_SUCCESS);
+}
+
+static void	ft_absolute_path(t_data *data, t_command *cmd)
+{
+	int	len;
+
+	data->pwd = ft_realloc("PWD=", cmd->argv[1], 0, 0);
+	len = ft_strlen(data->pwd) - 1;
+	if (data->pwd[len] == '/')
+		data->pwd[len] = '\0';
 }
 
 static void	ft_cd_relative_path(t_data *data, t_command *cmd)

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 14:25:09 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 10:05:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_parse {
 	int					i;
 	int					start;
 	int					i_string;
+	struct s_envp		*str;
 	char				*string[128];
 }				t_parse;
 
@@ -99,8 +100,6 @@ typedef struct s_parser {
 	int					inside_echo;
 	int					result;
 }				t_parser;
-
-int				g_ctrl_c;
 
 //ft_signals.c
 void			ft_set_parent_interactive(void);
@@ -164,6 +163,9 @@ void			ft_write_fd_nl(int fd, char *s);
 
 //ft_utils4.c
 int				ft_last_pos_in_string(char *s, char c);
+int				ft_isalpha(int c);
+int				ft_isdigit(int c);
+int				ft_isalnum(int c);
 
 //ft_parser0.c
 void			ft_init_parser(t_parser *parser, t_data *data);
@@ -177,14 +179,14 @@ void			ft_inside_d_quote(t_parse *check, char *input, t_data *data);
 void			ft_inside_s_quote(t_parse *check, char *input);
 void			ft_found_dollar(t_parse *check, char *input, t_data *data);
 char			*ft_prepare_output(t_parse *check);
-char			*ft_get_next_token(char **input, t_data *data);
+char			*ft_get_next_token(t_parser *parser, t_data *data);
 
 //ft_parser2.c
 int				ft_check_cmd(t_data *data, t_parser *parser);
 void			ft_check_quote(char c, int *d_quote, int *s_quote);
 int				ft_len_whitespaces(const char *s);
 char			*ft_skip_whitespaces(const char *str);
-char			*ft_check_quotes_insert_var(char *input, t_data *data);
+char			*ft_check_quotes_insert_var(t_parser *par, t_data *data);
 
 //ft_parser3.c
 int				ft_do_valid_redirections(t_data *data, t_parser *parser);
@@ -193,6 +195,10 @@ int				ft_redirect_(t_data *data, t_parser *parser,
 					void (*redirect)(t_command *, char *));
 void			ft_inside_echo(t_parser *parser);
 int				ft_redirect_prepare_in_in(t_data *data, t_parser *parser);
+
+//ft_parser4.c
+char			*ft_found_hash(char *input);
+void			ft_add_string(t_parse *check, char *input);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);
@@ -272,8 +278,8 @@ void			ft_free_char_array(char **array);
 void			ft_redirect_in(t_command *cmd, char *filename);
 void			ft_redirect_out(t_command *cmd, char *filename);
 void			ft_redirect_out_out(t_command *cmd, char *filename);
-void			ft_redirect_in_in(t_command *cmd, char *end_term);
-void			ft_heredoc(int fd_out, char *end_term);
+int				ft_redirect_in_in(t_command *cmd, char *end_term);
+int				ft_heredoc(int fd_out, char *end_term);
 
 //ft_get_next_line.c
 char			*ft_get_next_line(int fd);

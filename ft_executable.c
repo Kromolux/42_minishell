@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 08:01:45 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/07 21:38:29 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 
 	ft_set_child_active();
 	ft_connect_pipe(cmd);
+	if (cmd->next)
+		close(cmd->next->re->in);
 	envp = ft_create_envp_array(data->envp);
 	if (execve(cmd_path, cmd->argv, envp) == -1)
 		ft_print_error(cmd, errno, NULL);
@@ -49,6 +51,7 @@ void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 	ft_free_char_array(envp);
 	ft_delete_list(&data->envp);
 	ft_delete_cmd(&data->c_line);
+	free((void *) data->pwd);
 	free((void *) cmd_path);
 	exit(0);
 }

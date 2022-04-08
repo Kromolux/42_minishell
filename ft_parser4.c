@@ -1,48 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_utils4.c                                        :+:      :+:    :+:   */
+/*   ft_parser4.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/07 14:24:08 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:25:14 by rkaufman         ###   ########.fr       */
+/*   Created: 2022/04/08 08:43:47 by rkaufman          #+#    #+#             */
+/*   Updated: 2022/04/08 10:04:15 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_last_pos_in_string(char *s, char c)
+char	*ft_found_hash(char *input)
 {
-	int	i;
-
-	i = ft_strlen(s);
-	while (i >= 0)
-	{
-		if (s[i] == c)
-			return (i);
-		i--;
-	}
-	return (i);
+	input[0] = '\0';
+	return (NULL);
 }
 
-int	ft_isalpha(int c)
+void	ft_add_string(t_parse *check, char *input)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
+	char	*tmp;
 
-int	ft_isdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
-
-int	ft_isalnum(int c)
-{
-	if (ft_isalpha(c) || ft_isdigit(c))
-		return (1);
-	return (0);
+	tmp = ft_get_substring(input, check->start, check->i - check->start);
+	ft_lstadd_back(&check->str, ft_lstnew(tmp));
+	free((void *) tmp);
+	check->i_string++;
 }

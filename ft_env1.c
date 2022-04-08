@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:25:14 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 08:02:40 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 09:30:31 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@ int	ft_env(t_data *data, t_command *cmd)
 char	*ft_get_var(char *s)
 {
 	int		i;
-	char	*output;
 
 	i = 0;
+	if (ft_isdigit(s[i]) || (!ft_isalpha(s[i]) && s[i] != '_'))
+		return (ft_get_substring(s, 0, 1));
 	while (s[i])
 	{
-		if (s[i] == ' ' || (s[i] >= '\t' && s[i] <= '\r'))
+		if (s[i] == ' ' || (s[i] >= '\t' && s[i] <= '\r') || s[i] == '#')
 			break ;
 		else if (s[i] == '\"' || s[i] == '\'' || s[i] == '$' || s[i] == '=')
 			break ;
@@ -45,8 +46,7 @@ char	*ft_get_var(char *s)
 		}
 		i++;
 	}
-	output = ft_get_substring(s, 0, i);
-	return (output);
+	return (ft_get_substring(s, 0, i));
 }
 
 int	ft_str_var_cmp(char *var_name, char *var_elem)
