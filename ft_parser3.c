@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 16:07:15 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:09:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 10:24:59 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	ft_redirect_prepare_in_in(t_data *data, t_parser *parser)
 	if (ft_check_next_token(data, parser) == RETURN_ERROR)
 		return (RETURN_ERROR);
 	ft_set_parent_heredoc();
-	result = ft_redirect_in_in(parser->cmd, parser->token);
+	result = ft_redirect_in_in(data, parser->cmd, parser->token);
 	ft_set_parent_interactive();
 	if (result == RETURN_ERROR)
 	{

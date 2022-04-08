@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:05:03 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 10:30:52 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ int				ft_redirect_prepare_in_in(t_data *data, t_parser *parser);
 //ft_parser4.c
 char			*ft_found_hash(char *input);
 void			ft_add_string(t_parse *check, char *input);
+char			*ft_check_dollar_in_heredoc(char *token, t_data *data);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);
@@ -278,8 +279,8 @@ void			ft_free_char_array(char **array);
 void			ft_redirect_in(t_command *cmd, char *filename);
 void			ft_redirect_out(t_command *cmd, char *filename);
 void			ft_redirect_out_out(t_command *cmd, char *filename);
-int				ft_redirect_in_in(t_command *cmd, char *end_term);
-int				ft_heredoc(int fd_out, char *end_term);
+int				ft_redirect_in_in(t_data *data, t_command *cmd, char *end_term);
+int				ft_heredoc(t_data *data, int fd_out, char *end_term);
 
 //ft_get_next_line.c
 char			*ft_get_next_line(int fd);

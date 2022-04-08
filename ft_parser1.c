@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:11:30 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 10:19:52 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 {
 	if (check->i > 0)
 		ft_add_string(check, input);
-		//check->string[check->i_string] = ft_get_substring
-		//	(input, check->start, check->i - check->start);
-		//check->i_string++;
 	check->start = check->i + 1;
 	check->i++;
 	while (input[check->i])
@@ -28,8 +25,6 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 		if (input[check->i] == '\"')
 		{
 			ft_add_string(check, input);
-			//check->string[check->i_string] = ft_get_substring
-			//	(input, check->start, check->i - check->start);
 			check->start = check->i + 1;
 			break ;
 		}
@@ -67,18 +62,14 @@ void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 		tmp2 = ft_int_to_string((long) data->errnum);
 		ft_lstadd_back(&check->str, ft_lstnew(tmp2));
 		free((void *) tmp2);
-		//check->string[check->i_string] = ft_int_to_string((long) data->errnum);
 	}
 	else if (ft_strncmp(&input[check->i + 1], "\0", 1) == 0
 		|| ft_strncmp(&input[check->i + 1], "\'", 1) == 1
 		|| ft_strncmp(&input[check->i + 1], "\"", 1) == 1)
 		ft_lstadd_back(&check->str, ft_lstnew("$"));
-		//check->string[check->i_string] = ft_string_dup("$");
 	else
 	{
 		ft_lstadd_back(&check->str, ft_lstnew(ft_getenv(tmp, data->envp)));
-		//check->string[check->i_string] = ft_string_dup
-		//	(ft_getenv(tmp, data->envp));
 	}
 	check->i_string++;
 	check->i += ft_strlen(tmp);
@@ -89,17 +80,13 @@ void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 char	*ft_prepare_output(t_parse *check)
 {
 	char	*output;
-	//int		i;
 
 	output = (char *) malloc(1);
 	output[0] = '\0';
-	//i = 0;
 	while (check->str)
 	{
 		output = ft_realloc(output, check->str->var, 1, 0);
-		//output = ft_realloc(output, check->string[i], 1, 1);
 		check->str = check->str->next;
-		//i++;
 	}
 	ft_delete_list(&check->str);
 	return (output);
