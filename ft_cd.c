@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 11:12:11 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 21:46:11 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 16:28:18 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static void	ft_absolute_path(t_data *data, t_command *cmd)
 {
 	int	len;
 
+	free(data->pwd);
 	data->pwd = ft_realloc("PWD=", cmd->argv[1], 0, 0);
 	len = ft_strlen(data->pwd) - 1;
 	if (data->pwd[len] == '/')

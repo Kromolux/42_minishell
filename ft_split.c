@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 21:16:21 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 07:57:04 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 12:02:52 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	ft_free_char_array(char **array)
 	while (array && array[i])
 	{
 		free((void *) array[i]);
+		array[i] = NULL;
 		i++;
 	}
 	free((void *) array);

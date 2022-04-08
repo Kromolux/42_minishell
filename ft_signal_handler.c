@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 20:23:07 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:10:46 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 17:30:13 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	ft_parent_interactive_sigint(int sign)
 	if (sign == SIGINT)
 	{
 		write(1, "\n", 1);
-		rl_on_new_line();
 		rl_replace_line("", 0);
+		rl_on_new_line();
 		rl_redisplay();
 	}
 }
@@ -28,6 +28,7 @@ void	ft_parent_active_sigint(int sign)
 	if (sign == SIGINT)
 	{
 		write(1, "\n", 1);
+		rl_replace_line("", 0);
 	}
 }
 
@@ -42,6 +43,15 @@ void	ft_parent_active_sigquit(int sign)
 void	ft_bash_sigint(int sign)
 {
 	(void) sign;
+	if (sign == SIGINT)
+	{
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		write(1, "  \b\b\n", 5);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 /*

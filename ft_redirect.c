@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:13:29 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:32:20 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 15:18:17 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,16 @@ int	ft_heredoc(t_data *data, int fd_out, char *end_term)
 	{
 		ft_write_fd(STDOUT_FILENO, "> ");
 		user_input = ft_get_next_line(STDIN_FILENO);
-		if (ft_strcmp(user_input, tmp))
-			break ;
-		user_input = ft_check_dollar_in_heredoc(user_input, data);
-		ft_write_fd(fd_out, user_input);
 		if (!user_input)
 		{
 			free((void *) tmp);
 			close(fd_out);
 			return (RETURN_ERROR);
 		}
+		user_input = ft_check_dollar_in_heredoc(user_input, data);
+		ft_write_fd(fd_out, user_input);
+		if (ft_strcmp(user_input, tmp))
+			break ;
 		free((void *) user_input);
 	}
 	free((void *) tmp);

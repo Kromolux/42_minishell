@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:10:23 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 17:39:09 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,15 @@ int	main(int argc, char **argv, char **envp)
 
 void	ft_clear_mem(t_data *data)
 {
+	t_command	*tmp;
+
 	ft_delete_list(&data->envp);
 	if (data->c_line)
+	{
+		tmp = ft_last_cmd(data->c_line);
+		data->errnum = tmp->errnum;
 		ft_delete_cmd(&data->c_line);
+	}
 	rl_clear_history();
 	free((void *) data->pwd);
 	if (data->r_line)

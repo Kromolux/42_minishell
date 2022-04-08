@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:19:52 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 17:29:47 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,14 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 {
 	char	*tmp;
-	char	*tmp2;
 
-	ft_add_string(check, input);
+	if (check->i > 0)
+		ft_add_string(check, input);
 	tmp = ft_get_var(&input[check->i + 1]);
+	if (ft_check_validity(tmp) == 0 && tmp[0] != '?')
+		tmp[0] = '\0';
 	if (ft_strncmp(tmp, "?", 1) == 0)
-	{
-		tmp2 = ft_int_to_string((long) data->errnum);
-		ft_lstadd_back(&check->str, ft_lstnew(tmp2));
-		free((void *) tmp2);
-	}
+		ft_questionmark(check, data);
 	else if (ft_strncmp(&input[check->i + 1], "\0", 1) == 0
 		|| ft_strncmp(&input[check->i + 1], "\'", 1) == 1
 		|| ft_strncmp(&input[check->i + 1], "\"", 1) == 1)
@@ -77,18 +75,20 @@ void	ft_found_dollar(t_parse *check, char *input, t_data *data)
 	free((void *) tmp);
 }
 
-char	*ft_prepare_output(t_parse *check)
+char	*ft_prepare_output(t_envp *list)
 {
 	char	*output;
+	t_envp	*tmp;
 
+	tmp = list;
 	output = (char *) malloc(1);
 	output[0] = '\0';
-	while (check->str)
+	while (tmp)
 	{
-		output = ft_realloc(output, check->str->var, 1, 0);
-		check->str = check->str->next;
+		output = ft_realloc(output, tmp->var, 1, 0);
+		tmp = tmp->next;
 	}
-	ft_delete_list(&check->str);
+	ft_delete_list(&list);
 	return (output);
 }
 
@@ -101,6 +101,7 @@ char	*ft_get_next_token(t_parser *parser, t_data *data)
 	len = ft_end_of_token(parser->tmp, 0);
 	parser->token = ft_get_substring(parser->tmp, 0, len);
 	output = ft_check_quotes_insert_var(parser, data);
+	free(parser->token);
 	parser->tmp += len;
 	return (output);
 }

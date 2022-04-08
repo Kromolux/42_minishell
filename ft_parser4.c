@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 08:43:47 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:30:00 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 17:29:26 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,18 @@ char	*ft_check_dollar_in_heredoc(char *token, t_data *data)
 		check.i++;
 	}
 	if (check.i_string == 0)
-		return (ft_string_dup(token));
+		return (token);
 	if (check.start != check.i)
 		ft_lstadd_back(&check.str, ft_lstnew(&token[check.start]));
-	return (ft_prepare_output(&check));
+	free(token);
+	return (ft_prepare_output(check.str));
+}
+
+void	ft_questionmark(t_parse *check, t_data *data)
+{
+	char	*tmp2;
+
+	tmp2 = ft_int_to_string((long) data->errnum);
+	ft_lstadd_back(&check->str, ft_lstnew(tmp2));
+	free((void *) tmp2);
 }

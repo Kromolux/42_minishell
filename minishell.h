@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 10:30:52 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 17:29:17 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <readline/history.h>
 # include <sys/errno.h>
 # include <limits.h>
+# include <termios.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
 # define FILE_RIGHTS 0664
@@ -88,7 +89,6 @@ typedef struct s_parse {
 	int					start;
 	int					i_string;
 	struct s_envp		*str;
-	char				*string[128];
 }				t_parse;
 
 typedef struct s_parser {
@@ -178,7 +178,7 @@ int				ft_find_end_of_token(char *s, int *inside_echo);
 void			ft_inside_d_quote(t_parse *check, char *input, t_data *data);
 void			ft_inside_s_quote(t_parse *check, char *input);
 void			ft_found_dollar(t_parse *check, char *input, t_data *data);
-char			*ft_prepare_output(t_parse *check);
+char			*ft_prepare_output(t_envp *list);
 char			*ft_get_next_token(t_parser *parser, t_data *data);
 
 //ft_parser2.c
@@ -200,6 +200,7 @@ int				ft_redirect_prepare_in_in(t_data *data, t_parser *parser);
 char			*ft_found_hash(char *input);
 void			ft_add_string(t_parse *check, char *input);
 char			*ft_check_dollar_in_heredoc(char *token, t_data *data);
+void			ft_questionmark(t_parse *check, t_data *data);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);
