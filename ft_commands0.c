@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 10:50:11 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 13:34:26 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void	ft_delete_cmd(t_command **commands)
 		tmp = *commands;
 		*commands = (*commands)->next;
 		free((void *) tmp->cmd);
+		free((void *) tmp->fd);
+		tmp->fd = NULL;
 		tmp->cmd = NULL;
 		ft_delete_list(&tmp->argv);
 		ft_lstdel_re(tmp);
