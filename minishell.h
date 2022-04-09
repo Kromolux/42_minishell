@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 11:39:23 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:45:10 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ typedef struct s_command {
 	t_return			result;
 	char				*cmd;
 	struct s_envp		*argv;
-	//char				*argv[128];
 	struct s_re			*re;
 	struct s_fd			*fd;
 	struct s_command	*next;
@@ -107,7 +106,6 @@ typedef struct s_parser {
 	char				*token;
 	struct s_command	*cmd;
 	int					len;
-	int					argc;
 	int					inside_echo;
 	int					result;
 }				t_parser;
@@ -179,6 +177,10 @@ int				ft_last_pos_in_string(char *s, char c);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);
 int				ft_isalnum(int c);
+char			*ft_strnstr(const char *big, const char *little, size_t len);
+
+//ft_utils5.c
+size_t			ft_replace_in_string(char *s, char c_replace, char c_with);
 
 //ft_parser0.c
 void			ft_init_parser(t_parser *parser, t_data *data);
@@ -215,6 +217,10 @@ char			*ft_found_hash(char *input);
 void			ft_add_string(t_parse *check, char *input);
 char			*ft_check_dollar_in_heredoc(char *token, t_data *data);
 void			ft_questionmark(t_parse *check, t_data *data);
+t_return		ft_check_for_asterisk(t_parser *parser, char *input);
+
+//ft_parser5.c
+void			ft_parser_add_argv(t_data *data, t_parser *parser);
 
 //ft_exit.c
 int				ft_exit(t_command *cmd, t_data *data);
@@ -291,7 +297,7 @@ char			**ft_split(char const *s, const char c);
 size_t			ft_words_in_str(char const *s, const char c);
 void			ft_free_char_array(char **array);
 
-//ft_redirect.c
+//ft_redirect0.c
 t_return		ft_redirect_in(t_command *cmd, t_re *re);
 t_return		ft_redirect_out(t_command *cmd, t_re *re);
 t_return		ft_redirect_out_out(t_command *cmd, t_re *re);
@@ -302,10 +308,25 @@ int				ft_heredoc(t_data *data, int fd_out, char *end_term);
 t_re			*ft_lstnew_re(char *direct, char *file);
 t_re			*ft_lstlast_re(t_re *lst);
 void			ft_lstadd_back_re(t_re **lst, t_re *new);
-void			ft_lstdel_re(t_command *cmd);
+void			ft_lstdel_re(t_re **re);
 void			ft_get_re(t_data *data, t_parser *parser);
+
+//ft_redirect2.c
+void			ft_do_redirections(t_command *cmd, t_re *re);
 
 //ft_get_next_line.c
 char			*ft_get_next_line(int fd);
+
+//ft_wildcard0.c
+int				ft_wildcard(t_command *cmd, char *input);
+t_envp			*ft_get_files(char *path);
+char			**ft_get_filter(char *input);
+t_envp			*ft_apply_filter(t_envp *full_list, char **filter);
+t_return		ft_check_element(t_envp *full_list, char **filter,
+					int len_first, int filter_size);
+
+//ft_wildcard1.c
+t_envp			*ft_prepare_list(char *input);
+void			ft_get_filter_path(char *input, char **path, char **filter);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 11:16:21 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:10:04 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,6 @@ void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 		close(cmd->next->fd->in);
 	envp = ft_create_envp_array(data->envp);
 	argv = ft_create_argv_array(cmd);
-	/*int	i = 0;
-	printf("inside child!\n");
-	while (argv[i])
-	{
-		printf("argc[%i]=[%s]\n", i, argv[i]);
-		i++;
-	}
-	*/
 	if (execve(cmd_path, argv, envp) == -1)
 		ft_print_error(cmd, errno, NULL);
 	ft_close_pipe(cmd);
@@ -76,16 +68,15 @@ char	**ft_create_argv_array(t_command *cmd)
 	t_envp	*tmp;
 	int		i;
 
-	output = (char **) malloc((ft_count_of_envp(cmd->argv) + 2) * sizeof(char *));
+	output = (char **) malloc((ft_count_of_envp
+				(cmd->argv) + 2) * sizeof(char *));
 	if (!output)
 		return (NULL);
 	tmp = cmd->argv;
-	//printf("%s num=%i\n", cmd->cmd, ft_count_of_envp(cmd->argv));
 	output[0] = ft_string_dup(cmd->cmd);
 	i = 1;
 	while (tmp)
 	{
-		//printf("%s\n", tmp->var);
 		output[i] = ft_string_dup(tmp->var);
 		tmp = tmp->next;
 		i++;

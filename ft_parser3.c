@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 16:07:15 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 10:28:25 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:21:57 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,45 +24,23 @@ t_return	ft_do_valid_redirections(t_data *data)
 		while (re_tmp)
 		{
 			if (ft_strcmp(re_tmp->direct, "<<"))
-				if (ft_redirect_prepare_in_in(data, cmd_tmp, re_tmp->file) == RETURN_ERROR)
+				if (ft_redirect_prepare_in_in(data, cmd_tmp,
+						re_tmp->file) == RETURN_ERROR)
 					return (RETURN_ERROR);
 			re_tmp = re_tmp->next;
 		}
 		cmd_tmp = cmd_tmp->next;
 	}
-	
 	cmd_tmp = data->c_line;
-	while (cmd_tmp)
-	{
-		re_tmp = cmd_tmp->re;
-		while (re_tmp)
-		{
-			if (ft_strcmp(re_tmp->direct, "<"))
-			{
-				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_in) == RETURN_ERROR)
-					break ;
-			}
-			else if (ft_strcmp(re_tmp->direct, ">"))
-			{
-				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_out) == RETURN_ERROR)
-					break ;
-			}
-			else if (ft_strcmp(re_tmp->direct, ">>"))
-			{
-				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_out_out) == RETURN_ERROR)
-					break ;
-			}
-			re_tmp = re_tmp->next;
-		}
-		cmd_tmp = cmd_tmp->next;
-	}
+	ft_do_redirections(cmd_tmp, re_tmp);
 	return (RETURN_SUCCESS);
 }
 
 t_return	ft_redirect_(t_command *cmd, t_re *re,
 	t_return (*redirect)(t_command *, t_re *))
 {
-	if (re->file[0] == '\0')
+	if (re->file[0] == '\0' || re->file[0] == '<' || re->file[0] == '>'
+		|| re->file[0] == '|' || re->file[0] == '*')
 	{
 		cmd->result = RETURN_ERROR;
 		ft_print_error(cmd, ERR_SYNTAX, re->file);
@@ -91,12 +69,7 @@ void	ft_inside_echo(t_parser *parser)
 {
 	parser->len = ft_len_whitespaces(parser->tmp);
 	if (parser->len > 0)
-	{
-		parser->argc++;
-		ft_lstadd_back(&parser->cmd->argv, ft_lstnew(" "));
-		//parser->cmd->argv[parser->argc] = ft_string_dup(" ");
 		parser->tmp += parser->len;
-	}
 }
 
 int	ft_redirect_prepare_in_in(t_data *data, t_command *cmd, char *end_term)

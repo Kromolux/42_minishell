@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/07 14:24:08 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:25:14 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 15:14:41 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,29 @@ int	ft_isalnum(int c)
 	if (ft_isalpha(c) || ft_isdigit(c))
 		return (1);
 	return (0);
+}
+
+char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	little_len;
+	char	*ptr;
+
+	i = 0;
+	little_len = ft_strlen(little);
+	ptr = (char *) big;
+	if (little_len == 0)
+		return (ptr);
+	if (little_len > ft_strlen(big))
+		return (NULL);
+	while (i + little_len <= len)
+	{
+		if (big[i] == little[0])
+		{
+			if (ft_strncmp(&big[i], little, little_len) == 0)
+				return (&ptr[i]);
+		}
+		i++;
+	}
+	return (NULL);
 }

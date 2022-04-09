@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 08:43:47 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 20:13:08 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 17:58:35 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,15 @@ void	ft_questionmark(t_parse *check, t_data *data)
 	tmp2 = ft_int_to_string((long) data->errnum);
 	ft_lstadd_back(&check->str, ft_lstnew(tmp2));
 	free((void *) tmp2);
+}
+
+t_return	ft_check_for_asterisk(t_parser *parser, char *input)
+{
+	if (ft_char_in_str(input, '*'))
+	{
+		ft_wildcard(parser->cmd, input);
+		return (RETURN_TRUE);
+	}
+	ft_replace_in_string(input, (unsigned char) 255, '*');
+	return (RETURN_FALSE);
 }

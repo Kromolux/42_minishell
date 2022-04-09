@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 15:28:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 11:18:24 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:07:27 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 int	ft_echo(t_command *cmd)
 {
 	t_envp	*argv_tmp;
-	int	new_line;
+	t_envp	*valid_argv;
+	int		new_line;
 
 	new_line = 1;
 	argv_tmp = cmd->argv;
@@ -27,11 +28,11 @@ int	ft_echo(t_command *cmd)
 			break ;
 		argv_tmp = argv_tmp->next;
 	}
-	argv_tmp = cmd->argv;
+	valid_argv = argv_tmp;
 	while (argv_tmp)
 	{
-		if (!argv_tmp->next && argv_tmp->var[0] == ' ')
-			break ;
+		if (argv_tmp != valid_argv)
+			ft_write_fd(cmd->fd->out, " ");
 		ft_write_fd(cmd->fd->out, argv_tmp->var);
 		argv_tmp = argv_tmp->next;
 	}
@@ -45,10 +46,8 @@ int	ft_valid_option(char *input)
 	int	i;
 
 	i = 0;
-	if (input[i] != '-' && input[i] != ' ')
+	if (input[i] != '-')
 		return (0);
-	else if (input[i] == ' ')
-		return (1);
 	i++;
 	while (input[i])
 	{

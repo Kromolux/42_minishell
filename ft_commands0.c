@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 13:34:26 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:06:59 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_delete_cmd(t_command **commands)
 		tmp->fd = NULL;
 		tmp->cmd = NULL;
 		ft_delete_list(&tmp->argv);
-		ft_lstdel_re(tmp);
+		ft_lstdel_re(&tmp->re);
 		free((void *) tmp);
 		tmp = NULL;
 	}
@@ -74,19 +74,19 @@ int	ft_build_in_exe(t_command *cmd, t_data *data)
 void	ft_print_commands(t_command *commands)
 {
 	t_envp	*tmp;
-	int	i;
+	int		i;
 
 	while (commands)
 	{
 		i = 0;
 		tmp = commands->argv;
-		while (commands->argv)
+		while (tmp)
 		{
-			printf("argc=%i [%s]\n", i, commands->argv->var);
+			printf("argc=%i [%s]\n", i, tmp->var);
 			tmp = tmp->next;
 			i++;
 		}
 		if (commands)
-		commands = commands->next;
+			commands = commands->next;
 	}
 }

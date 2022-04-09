@@ -6,11 +6,13 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/08 20:04:19 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/09 20:47:56 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #valgrind --leak-check=full --show-leak-kinds=all --ignore-fn=readline ./minishell
+#valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes
+
 NAME		:=	minishell
 
 CC			:=	gcc
@@ -25,11 +27,13 @@ SRC			:=	ft_minishell.c \
 				ft_utils2.c \
 				ft_utils3.c \
 				ft_utils4.c \
+				ft_utils5.c \
 				ft_parser0.c \
 				ft_parser1.c \
 				ft_parser2.c \
 				ft_parser3.c \
 				ft_parser4.c \
+				ft_parser5.c \
 				ft_commands0.c \
 				ft_commands1.c \
 				ft_env0.c \
@@ -44,12 +48,15 @@ SRC			:=	ft_minishell.c \
 				ft_executable.c \
 				ft_split.c \
 				ft_pipe.c \
-				ft_redirect.c \
+				ft_redirect0.c \
 				ft_redirect1.c \
+				ft_redirect2.c \
 				ft_get_next_line.c \
 				ft_signals.c \
 				ft_signal_handler.c \
-				ft_exit.c
+				ft_exit.c \
+				ft_wildcard0.c \
+				ft_wildcard1.c
 
 OBJ			:=	$(SRC:%.c=%.o)
 
@@ -74,5 +81,8 @@ re: fclean all
 
 norm:
 	norminette -R CheckForbiddenSourceHeader $(SRC) $(HEADERFILE)
+
+val:
+	valgrind --leak-check=full --trace-children=yes ./minishell
 
 .PHONY: clean fclean re

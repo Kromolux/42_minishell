@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 10:10:39 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 20:04:08 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,12 @@
 int	ft_check_cmd(t_data *data, t_parser *parser)
 {
 	parser->tmp += parser->len;
+	(void) data;
 	if (parser->token[0] == '|')
 	{
-		free((void *) parser->token);
-		parser->token = ft_get_next_token(parser, data);
-		if (parser->token[0] == '\0'
-			|| !ft_check_heredoc_end_term(parser->token))
-		{
-			ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
-			return (RETURN_ERROR);
-		}
 		parser->cmd->next = ft_create_cmd_elem();
 		parser->cmd = parser->cmd->next;
-		parser->argc = 0;
-		return (RETURN_FALSE);
+		return (RETURN_SUCCESS);
 	}
 	if (ft_strcmp(parser->token, "<") || (ft_strcmp(parser->token, ">"))
 		|| (ft_strcmp(parser->token, "<<")) || (ft_strcmp(parser->token, ">>")))

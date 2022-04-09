@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:26:10 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 21:16:10 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 17:32:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_inside_d_quote(t_parse *check, char *input, t_data *data)
 	check->i++;
 	while (input[check->i])
 	{
+		if (input[check->i] == '*')
+			input[check->i] = (unsigned char) 255;
 		if (input[check->i] == '$')
 			ft_found_dollar(check, input, data);
 		if (input[check->i] == '\"')
@@ -40,6 +42,8 @@ void	ft_inside_s_quote(t_parse *check, char *input)
 	check->i++;
 	while (input[check->i])
 	{
+		if (input[check->i] == '*')
+			input[check->i] = (unsigned char) 255;
 		if (input[check->i] == '\'')
 		{
 			ft_add_string(check, input);
