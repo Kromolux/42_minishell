@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 15:28:00 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/06 13:07:35 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 11:18:24 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,29 @@
 
 int	ft_echo(t_command *cmd)
 {
-	int	i;
+	t_envp	*argv_tmp;
 	int	new_line;
 
 	new_line = 1;
-	i = 1;
-	while (cmd->argv[i])
+	argv_tmp = cmd->argv;
+	while (argv_tmp)
 	{
-		if (ft_valid_option(cmd->argv[i]))
+		if (ft_valid_option(argv_tmp->var))
 			new_line = 0;
 		else
 			break ;
-		i++;
+		argv_tmp = argv_tmp->next;
 	}
-	while (cmd->argv[i])
+	argv_tmp = cmd->argv;
+	while (argv_tmp)
 	{
-		if (!cmd->argv[i + 1] && cmd->argv[i][0] == ' ')
+		if (!argv_tmp->next && argv_tmp->var[0] == ' ')
 			break ;
-		ft_write_fd(cmd->re->out, cmd->argv[i]);
-		i++;
+		ft_write_fd(cmd->fd->out, argv_tmp->var);
+		argv_tmp = argv_tmp->next;
 	}
 	if (new_line)
-		write(cmd->re->out, "\n", 1);
+		write(cmd->fd->out, "\n", 1);
 	return (RETURN_SUCCESS);
 }
 

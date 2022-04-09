@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 13:49:47 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 10:10:39 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,8 @@ int	ft_check_cmd(t_data *data, t_parser *parser)
 		}
 		parser->cmd->next = ft_create_cmd_elem();
 		parser->cmd = parser->cmd->next;
-		parser->cmd->argv[0] = ft_string_dup(parser->token);
-		parser->argc = 1;
-		return (RETURN_SUCCESS);
+		parser->argc = 0;
+		return (RETURN_FALSE);
 	}
 	if (ft_strcmp(parser->token, "<") || (ft_strcmp(parser->token, ">"))
 		|| (ft_strcmp(parser->token, "<<")) || (ft_strcmp(parser->token, ">>")))

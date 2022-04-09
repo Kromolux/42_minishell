@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/08 08:45:05 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/08 20:04:19 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ SRC			:=	ft_minishell.c \
 				ft_split.c \
 				ft_pipe.c \
 				ft_redirect.c \
+				ft_redirect1.c \
 				ft_get_next_line.c \
 				ft_signals.c \
 				ft_signal_handler.c \

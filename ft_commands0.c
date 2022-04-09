@@ -6,13 +6,11 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 14:01:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 10:50:11 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	ft_delete_redirections(t_command *cmd);
 
 t_command	*ft_create_cmd_elem(void)
 {
@@ -22,20 +20,20 @@ t_command	*ft_create_cmd_elem(void)
 	if (!output)
 		return (NULL);
 	ft_memset((void *) output, 0, sizeof(t_command));
-	output->re = (t_redirect *) malloc(sizeof(t_redirect));
-	if (!output->re)
+	output->fd = (t_fd *) malloc(sizeof(t_fd));
+	if (!output->fd)
 		return (NULL);
-	output->re->in = STDIN_FILENO;
-	output->re->out = STDOUT_FILENO;
-	output->re->err = STDERR_FILENO;
-	output->re->next = NULL;
+	output->fd->in = STDIN_FILENO;
+	output->fd->out = STDOUT_FILENO;
+	output->fd->err = STDERR_FILENO;
+	output->result = RETURN_SUCCESS;
+	output->re = NULL;
 	return (output);
 }
 
 void	ft_delete_cmd(t_command **commands)
 {
 	t_command	*tmp;
-	int			i;
 
 	while (*commands)
 	{
@@ -43,14 +41,8 @@ void	ft_delete_cmd(t_command **commands)
 		*commands = (*commands)->next;
 		free((void *) tmp->cmd);
 		tmp->cmd = NULL;
-		i = 0;
-		while (tmp && tmp->argv[i])
-		{
-			free((void *) tmp->argv[i]);
-			tmp->argv[i] = NULL;
-			i++;
-		}
-		ft_delete_redirections(tmp);
+		ft_delete_list(&tmp->argv);
+		ft_lstdel_re(tmp);
 		free((void *) tmp);
 		tmp = NULL;
 	}
@@ -58,48 +50,38 @@ void	ft_delete_cmd(t_command **commands)
 
 int	ft_build_in_exe(t_command *cmd, t_data *data)
 {
-	if (ft_strcmp(cmd->argv[0], "exit"))
+	if (ft_strcmp(cmd->cmd, "exit"))
 		return (ft_exit(cmd, data));
-	else if (ft_strcmp(cmd->argv[0], "pwd"))
+	else if (ft_strcmp(cmd->cmd, "pwd"))
 		return (ft_pwd(data, cmd));
-	else if (ft_strcmp(cmd->argv[0], "env"))
+	else if (ft_strcmp(cmd->cmd, "env"))
 		return (ft_env(data, cmd));
-	else if (ft_strcmp(cmd->argv[0], "export"))
+	else if (ft_strcmp(cmd->cmd, "export"))
 		return (ft_export(data, cmd));
-	else if (ft_strcmp(cmd->argv[0], "unset"))
+	else if (ft_strcmp(cmd->cmd, "unset"))
 		return (ft_unset(data, cmd));
-	else if (ft_strcmp(cmd->argv[0], "cd"))
+	else if (ft_strcmp(cmd->cmd, "cd"))
 		return (ft_cd(data, cmd));
-	else if (ft_strcmp(cmd->argv[0], "echo"))
+	else if (ft_strcmp(cmd->cmd, "echo"))
 		return (ft_echo(cmd));
-	else if (ft_strcmp(cmd->argv[0], "error_codes"))
+	else if (ft_strcmp(cmd->cmd, "error_codes"))
 		return (ft_error_codes(cmd));
 	return (RETURN_FALSE);
 }
 
-static void	ft_delete_redirections(t_command *cmd)
-{
-	t_redirect	*re_tmp;
-
-	while (cmd && cmd->re)
-	{
-		re_tmp = cmd->re;
-		cmd->re = cmd->re->next;
-		free((void *) re_tmp);
-		re_tmp = NULL;
-	}
-}
-
 void	ft_print_commands(t_command *commands)
 {
+	t_envp	*tmp;
 	int	i;
 
 	while (commands)
 	{
 		i = 0;
-		while (commands->argv[i])
+		tmp = commands->argv;
+		while (commands->argv)
 		{
-			printf("argc=%i [%s]\n", i, commands->argv[i]);
+			printf("argc=%i [%s]\n", i, commands->argv->var);
+			tmp = tmp->next;
 			i++;
 		}
 		if (commands)

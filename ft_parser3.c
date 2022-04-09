@@ -6,47 +6,82 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 16:07:15 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 15:09:54 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 10:28:25 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_do_valid_redirections(t_data *data, t_parser *parser)
+t_return	ft_do_valid_redirections(t_data *data)
 {
-	if (ft_strcmp(parser->token, "<"))
-		return (ft_redirect_(data, parser, ft_redirect_in));
-	else if (ft_strcmp(parser->token, ">"))
-		return (ft_redirect_(data, parser, ft_redirect_out));
-	else if (ft_strcmp(parser->token, "<<"))
-		return (ft_redirect_prepare_in_in(data, parser));
-	else if (ft_strcmp(parser->token, ">>"))
-		return (ft_redirect_(data, parser, ft_redirect_out_out));
-	else if (ft_strcmp(parser->token, "||"))
+	t_re		*re_tmp;
+	t_command	*cmd_tmp;
+
+	cmd_tmp = data->c_line;
+	while (cmd_tmp)
 	{
-		ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
+		re_tmp = cmd_tmp->re;
+		while (re_tmp)
+		{
+			if (ft_strcmp(re_tmp->direct, "<<"))
+				if (ft_redirect_prepare_in_in(data, cmd_tmp, re_tmp->file) == RETURN_ERROR)
+					return (RETURN_ERROR);
+			re_tmp = re_tmp->next;
+		}
+		cmd_tmp = cmd_tmp->next;
+	}
+	
+	cmd_tmp = data->c_line;
+	while (cmd_tmp)
+	{
+		re_tmp = cmd_tmp->re;
+		while (re_tmp)
+		{
+			if (ft_strcmp(re_tmp->direct, "<"))
+			{
+				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_in) == RETURN_ERROR)
+					break ;
+			}
+			else if (ft_strcmp(re_tmp->direct, ">"))
+			{
+				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_out) == RETURN_ERROR)
+					break ;
+			}
+			else if (ft_strcmp(re_tmp->direct, ">>"))
+			{
+				if (ft_redirect_(cmd_tmp, re_tmp, ft_redirect_out_out) == RETURN_ERROR)
+					break ;
+			}
+			re_tmp = re_tmp->next;
+		}
+		cmd_tmp = cmd_tmp->next;
+	}
+	return (RETURN_SUCCESS);
+}
+
+t_return	ft_redirect_(t_command *cmd, t_re *re,
+	t_return (*redirect)(t_command *, t_re *))
+{
+	if (re->file[0] == '\0')
+	{
+		cmd->result = RETURN_ERROR;
+		ft_print_error(cmd, ERR_SYNTAX, re->file);
+		return (RETURN_ERROR);
+	}
+	if (redirect(cmd, re) == RETURN_ERROR)
+	{
+		cmd->result = RETURN_ERROR;
 		return (RETURN_ERROR);
 	}
 	return (RETURN_SUCCESS);
 }
 
-int	ft_redirect_(t_data *data, t_parser *parser,
-	void (*redirect)(t_command *, char *))
+int	ft_check_next_token(t_command *cmd, char *file)
 {
-	if (ft_check_next_token(data, parser) == RETURN_ERROR)
-		return (RETURN_ERROR);
-	redirect(parser->cmd, parser->token);
-	return (RETURN_SUCCESS);
-}
-
-int	ft_check_next_token(t_data *data, t_parser *parser)
-{
-	free(parser->token);
-	parser->token = ft_get_next_token(parser, data);
-	if (parser->token[0] == '\0' || ft_check_heredoc_end_term
-		(parser->token) == RETURN_FALSE)
+	if (file[0] == '\0' || ft_check_heredoc_end_term
+		(file) == RETURN_FALSE)
 	{
-		ft_print_error(parser->cmd, ERR_SYNTAX, parser->token);
+		ft_print_error(cmd, ERR_SYNTAX, file);
 		return (RETURN_ERROR);
 	}
 	return (RETURN_SUCCESS);
@@ -58,24 +93,24 @@ void	ft_inside_echo(t_parser *parser)
 	if (parser->len > 0)
 	{
 		parser->argc++;
-		parser->cmd->argv[parser->argc] = ft_string_dup(" ");
+		ft_lstadd_back(&parser->cmd->argv, ft_lstnew(" "));
+		//parser->cmd->argv[parser->argc] = ft_string_dup(" ");
 		parser->tmp += parser->len;
 	}
 }
 
-int	ft_redirect_prepare_in_in(t_data *data, t_parser *parser)
+int	ft_redirect_prepare_in_in(t_data *data, t_command *cmd, char *end_term)
 {
-	int	result;
-
-	if (ft_check_next_token(data, parser) == RETURN_ERROR)
+	if (ft_check_next_token(cmd, end_term) == RETURN_ERROR)
+	{
 		return (RETURN_ERROR);
+	}
 	ft_set_parent_heredoc();
-	result = ft_redirect_in_in(data, parser->cmd, parser->token);
+	cmd->result = ft_redirect_in_in(data, cmd, end_term);
 	ft_set_parent_interactive();
-	if (result == RETURN_ERROR)
+	if (cmd->result == RETURN_ERROR)
 	{
 		data->errnum = 1;
-		ft_delete_cmd(&data->c_line);
 		return (RETURN_ERROR);
 	}
 	return (RETURN_SUCCESS);

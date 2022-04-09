@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 11:25:14 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 09:30:31 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/08 19:49:21 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_env(t_data *data, t_command *cmd)
 	while (tmp)
 	{
 		if (ft_char_in_str(tmp->var, '='))
-			ft_write_fd_nl(cmd->re->out, tmp->var);
+			ft_write_fd_nl(cmd->fd->out, tmp->var);
 		tmp = tmp->next;
 	}
 	return (RETURN_SUCCESS);

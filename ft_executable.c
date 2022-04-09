@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/07 21:38:29 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 11:16:21 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 	char	*cmd_path;
 
 	paths = ft_split(ft_getenv("PATH", data->envp), ':');
-	cmd_path = ft_check_path(cmd->argv[0], paths);
+	if (!paths)
+		return (ft_print_error(cmd, ERR_FILE, NULL));
+	cmd_path = ft_check_path(cmd->cmd, paths);
 	ft_free_char_array(paths);
 	if (!cmd_path)
-		return (ft_print_error(cmd, ERR_FILE_CMD, NULL));
-	if (cmd->re->in == -1)
+		return (ft_print_error(cmd, ERR_CMD_NOT, NULL));
+	if (cmd->fd->in == -1)
 	{
 		free(cmd_path);
 		return (1);
@@ -39,21 +41,57 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 {
 	char	**envp;
+	char	**argv;
 
 	ft_set_child_active();
 	ft_connect_pipe(cmd);
 	if (cmd->next)
-		close(cmd->next->re->in);
+		close(cmd->next->fd->in);
 	envp = ft_create_envp_array(data->envp);
-	if (execve(cmd_path, cmd->argv, envp) == -1)
+	argv = ft_create_argv_array(cmd);
+	/*int	i = 0;
+	printf("inside child!\n");
+	while (argv[i])
+	{
+		printf("argc[%i]=[%s]\n", i, argv[i]);
+		i++;
+	}
+	*/
+	if (execve(cmd_path, argv, envp) == -1)
 		ft_print_error(cmd, errno, NULL);
 	ft_close_pipe(cmd);
 	ft_free_char_array(envp);
+	ft_free_char_array(argv);
 	ft_delete_list(&data->envp);
+	ft_delete_list(&cmd->argv);
 	ft_delete_cmd(&data->c_line);
 	free((void *) data->pwd);
 	free((void *) cmd_path);
 	exit(0);
+}
+
+char	**ft_create_argv_array(t_command *cmd)
+{
+	char	**output;
+	t_envp	*tmp;
+	int		i;
+
+	output = (char **) malloc((ft_count_of_envp(cmd->argv) + 2) * sizeof(char *));
+	if (!output)
+		return (NULL);
+	tmp = cmd->argv;
+	//printf("%s num=%i\n", cmd->cmd, ft_count_of_envp(cmd->argv));
+	output[0] = ft_string_dup(cmd->cmd);
+	i = 1;
+	while (tmp)
+	{
+		//printf("%s\n", tmp->var);
+		output[i] = ft_string_dup(tmp->var);
+		tmp = tmp->next;
+		i++;
+	}
+	output[i] = NULL;
+	return (output);
 }
 
 char	**ft_create_envp_array(t_envp *envp)

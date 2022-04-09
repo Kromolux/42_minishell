@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_wildcard.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/27 11:26:25 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 19:49:42 by rkaufman         ###   ########.fr       */
+/*   Created: 2022/04/09 09:00:38 by rkaufman          #+#    #+#             */
+/*   Updated: 2022/04/09 09:42:09 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdio.h>
 
-int	ft_pwd(t_data *data, t_command *cmd)
+int	main(int argc, char **argv, char **envp)
 {
-	ft_write_fd_nl(cmd->fd->out, &data->pwd[ft_pos_in_string
-		(data->pwd, '=') + 1]);
-	return (RETURN_SUCCESS);
+	int	i;
+	
+	(void) argc;
+	(void) envp;
+	i = 0;
+	while (i < argc)
+	{
+		printf("argc=[%2i]=[%s]\n", i, argv[i]);
+		i++;
+	}
+	return (0);
 }

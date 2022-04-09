@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 17:29:17 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 11:39:23 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/errno.h>
 # include <limits.h>
 # include <termios.h>
+# include <dirent.h>
 # define PROMPT "MINISHELL: "
 # define EXPORT "declare -x "
 # define FILE_RIGHTS 0664
@@ -49,23 +50,33 @@ typedef enum e_err_handl {
 	ERR_NUMERIC,
 	ERR_TOO_ARG,
 	ERR_SYNTAX,
-	ERR_FILE_CMD,
-	ERR_CD_FOLDER
+	ERR_CMD_NOT,
+	ERR_CD_FOLDER,
+	ERR_FD,
+	ERR_FILE
 }			t_err_handl;
 
-typedef struct s_redirect {
+typedef struct s_re {
+	char				*direct;
+	char				*file;
+	struct s_re			*next;
+}				t_re;
+
+typedef struct s_fd {
 	int					in;
 	int					out;
 	int					err;
-	struct s_redirect	*next;
-}				t_redirect;
+}				t_fd;
 
 typedef struct s_command {
 	int					pid;
 	int					errnum;
+	t_return			result;
 	char				*cmd;
-	char				*argv[128];
-	struct s_redirect	*re;
+	struct s_envp		*argv;
+	//char				*argv[128];
+	struct s_re			*re;
+	struct s_fd			*fd;
 	struct s_command	*next;
 }				t_command;
 
@@ -133,6 +144,8 @@ void			ft_err_too_arg(t_command *cmd);
 //ft_error2.c
 void			ft_err_cd_folder(t_command *cmd, char *token);
 void			ft_err_else(t_command *cmd, int errnum);
+void			ft_err_fd(t_command *cmd, char *token);
+void			ft_err_file(t_command *cmd);
 
 //ft_utils0.c
 size_t			ft_strlen(const char *s);
@@ -189,12 +202,13 @@ char			*ft_skip_whitespaces(const char *str);
 char			*ft_check_quotes_insert_var(t_parser *par, t_data *data);
 
 //ft_parser3.c
-int				ft_do_valid_redirections(t_data *data, t_parser *parser);
-int				ft_check_next_token(t_data *data, t_parser *parser);
-int				ft_redirect_(t_data *data, t_parser *parser,
-					void (*redirect)(t_command *, char *));
+t_return		ft_do_valid_redirections(t_data *data);
+int				ft_check_next_token(t_command *cmd, char *file);
+t_return		ft_redirect_(t_command *cmd, t_re *re,
+					t_return (*redirect)(t_command *, t_re *));
 void			ft_inside_echo(t_parser *parser);
-int				ft_redirect_prepare_in_in(t_data *data, t_parser *parser);
+int				ft_redirect_prepare_in_in(t_data *data,
+					t_command *cmd, char *end_term);
 
 //ft_parser4.c
 char			*ft_found_hash(char *input);
@@ -270,6 +284,7 @@ int				ft_do_execve(t_command *cmd, t_data *data);
 char			*ft_check_path(char *cmd, char **paths);
 char			**ft_create_envp_array(t_envp *envp);
 void			ft_child_process(t_command *cmd, t_data *data, char *cmd_path);
+char			**ft_create_argv_array(t_command *cmd);
 
 //ft_split.c
 char			**ft_split(char const *s, const char c);
@@ -277,11 +292,18 @@ size_t			ft_words_in_str(char const *s, const char c);
 void			ft_free_char_array(char **array);
 
 //ft_redirect.c
-void			ft_redirect_in(t_command *cmd, char *filename);
-void			ft_redirect_out(t_command *cmd, char *filename);
-void			ft_redirect_out_out(t_command *cmd, char *filename);
-int				ft_redirect_in_in(t_data *data, t_command *cmd, char *end_term);
+t_return		ft_redirect_in(t_command *cmd, t_re *re);
+t_return		ft_redirect_out(t_command *cmd, t_re *re);
+t_return		ft_redirect_out_out(t_command *cmd, t_re *re);
+t_return		ft_redirect_in_in(t_data *data, t_command *cmd, char *end_term);
 int				ft_heredoc(t_data *data, int fd_out, char *end_term);
+
+//ft_redirect1.c
+t_re			*ft_lstnew_re(char *direct, char *file);
+t_re			*ft_lstlast_re(t_re *lst);
+void			ft_lstadd_back_re(t_re **lst, t_re *new);
+void			ft_lstdel_re(t_command *cmd);
+void			ft_get_re(t_data *data, t_parser *parser);
 
 //ft_get_next_line.c
 char			*ft_get_next_line(int fd);

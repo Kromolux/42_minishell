@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 11:12:11 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 16:28:18 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 10:42:15 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,17 @@ int	ft_cd(t_data *data, t_command *cmd)
 	char		*old_pwd;
 	struct stat	path_check;
 
-	if (!cmd->argv[1])
+	if (!cmd->argv)
 		return (RETURN_ERROR);
-	if (lstat(cmd->argv[1], &path_check) == RETURN_ERROR)
-		return (ft_print_error(cmd, ERR_CD_FOLDER, cmd->argv[1]));
+	if (lstat(cmd->argv->var, &path_check) == RETURN_ERROR)
+		return (ft_print_error(cmd, ERR_CD_FOLDER, cmd->argv->var));
 	if (cmd == data->c_line)
 	{
-		chdir(cmd->argv[1]);
+		chdir(cmd->argv->var);
 		old_pwd = ft_realloc("OLDPWD=", ft_getenv("PWD", data->envp), 0, 0);
 		ft_change_envp(data, old_pwd);
 		free(old_pwd);
-		if (cmd->argv[1][0] == '/')
+		if (cmd->argv->var[0] == '/')
 			ft_absolute_path(data, cmd);
 		else
 			ft_cd_relative_path(data, cmd);
@@ -46,7 +46,7 @@ static void	ft_absolute_path(t_data *data, t_command *cmd)
 	int	len;
 
 	free(data->pwd);
-	data->pwd = ft_realloc("PWD=", cmd->argv[1], 0, 0);
+	data->pwd = ft_realloc("PWD=", cmd->argv->var, 0, 0);
 	len = ft_strlen(data->pwd) - 1;
 	if (data->pwd[len] == '/')
 		data->pwd[len] = '\0';
@@ -59,7 +59,7 @@ static void	ft_cd_relative_path(t_data *data, t_command *cmd)
 	struct stat	path_check;
 
 	i = 0;
-	new_path = ft_split(cmd->argv[1], '/');
+	new_path = ft_split(cmd->argv->var, '/');
 	while (new_path[i])
 	{
 		if (ft_strcmp(new_path[i], "..") == 1)

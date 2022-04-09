@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 17:57:38 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 13:46:09 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 10:55:07 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,36 @@
 void	ft_parser(t_data *data)
 {
 	t_parser	parser;
+	char		*tmp;
 
 	ft_init_parser(&parser, data);
 	while (*parser.tmp)
 	{
-		if (parser.cmd->argv[parser.argc] && parser.cmd->argv[parser.argc][0])
-			parser.argc++;
+		//if (parser.cmd->argv && parser.cmd->argv[parser.argc][0])
+		//	parser.argc++;
 		parser.len = ft_end_of_token(parser.tmp, &parser.inside_echo);
 		parser.token = ft_get_substring(parser.tmp, 0, parser.len);
 		parser.result = ft_check_cmd(data, &parser);
 		if (parser.result == RETURN_ERROR)
 			break ;
-		if (ft_do_valid_redirections(data, &parser) == RETURN_ERROR)
-			break ;
+		if (parser.result == RETURN_TRUE)
+			ft_get_re(data, &parser);
 		if (parser.result == RETURN_FALSE)
-			parser.cmd->argv[parser.argc] = ft_check_quotes_insert_var
-				(&parser, data);
+		{
+			tmp = ft_check_quotes_insert_var(&parser, data);
+			if (parser.cmd->cmd)
+				ft_lstadd_back(&parser.cmd->argv, ft_lstnew(tmp));
+			else
+				parser.cmd->cmd = ft_string_dup(tmp);
+			free((void *) tmp);
+			//parser.cmd->argv = ft_check_quotes_insert_var(&parser, data);
+		}
 		ft_free((void *) parser.token);
 		if (parser.inside_echo == 0)
 			parser.tmp = ft_skip_whitespaces(parser.tmp);
 		else
 			ft_inside_echo(&parser);
-		if (parser.argc == 0 && ft_strcmp(parser.cmd->argv[0], "echo"))
+		if (parser.argc == 0 && ft_strcmp(parser.cmd->cmd, "echo"))
 			parser.inside_echo = 1;
 	}
 }

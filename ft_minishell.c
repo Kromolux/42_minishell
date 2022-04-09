@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/08 17:39:09 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/09 11:01:58 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(data.r_line) > 0)
 			add_history(data.r_line);
 		ft_parser(&data);
-		if (ft_cycle_cmd(&data) == RETURN_EXIT)
-			break ;
+		if (ft_do_valid_redirections(&data) == RETURN_SUCCESS)
+			if (ft_cycle_cmd(&data) == RETURN_EXIT)
+				break ;
 		ft_wait_for_kids(&data);
 		free((void *) data.r_line);
 		ft_delete_cmd(&data.c_line);
@@ -118,7 +119,7 @@ int	ft_cycle_cmd(t_data *data)
 	cmd = data->c_line;
 	while (cmd)
 	{
-		if (cmd->argv[0] && cmd->argv[0][0])
+		if (cmd->result == RETURN_SUCCESS && cmd->cmd)
 		{
 			if (cmd->next)
 				ft_create_pipe(cmd);
