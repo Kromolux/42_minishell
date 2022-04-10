@@ -6,7 +6,7 @@
 #    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/09 20:47:56 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/10 10:13:02 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,73 +15,87 @@
 
 NAME		:=	minishell
 
+OBJ_FOLDER	:=	objs
+SRC_FOLDER	:=	srcs
+
 CC			:=	gcc
 HEADERFILE	:=	minishell.h
 
-SRC			:=	ft_minishell.c \
-				ft_error0.c \
-				ft_error1.c \
-				ft_error2.c \
-				ft_utils0.c \
-				ft_utils1.c \
-				ft_utils2.c \
-				ft_utils3.c \
-				ft_utils4.c \
-				ft_utils5.c \
-				ft_parser0.c \
-				ft_parser1.c \
-				ft_parser2.c \
-				ft_parser3.c \
-				ft_parser4.c \
-				ft_parser5.c \
-				ft_commands0.c \
-				ft_commands1.c \
-				ft_env0.c \
-				ft_env1.c \
-				ft_env2.c \
-				ft_export0.c \
-				ft_export1.c \
-				ft_unset.c \
-				ft_pwd.c \
-				ft_echo.c \
-				ft_cd.c \
-				ft_executable.c \
-				ft_split.c \
-				ft_pipe.c \
-				ft_redirect0.c \
-				ft_redirect1.c \
-				ft_redirect2.c \
-				ft_get_next_line.c \
-				ft_signals.c \
-				ft_signal_handler.c \
-				ft_exit.c \
-				ft_wildcard0.c \
-				ft_wildcard1.c
+SRCS		:=	ft_minishell.c \
+				errors/ft_error0.c \
+				errors/ft_error1.c \
+				errors/ft_error2.c \
+				utils/ft_utils0.c \
+				utils/ft_utils1.c \
+				utils/ft_utils2.c \
+				utils/ft_utils3.c \
+				utils/ft_utils4.c \
+				utils/ft_utils5.c \
+				parser/ft_parser0.c \
+				parser/ft_parser1.c \
+				parser/ft_parser2.c \
+				parser/ft_parser3.c \
+				parser/ft_parser4.c \
+				parser/ft_parser5.c \
+				executor/ft_commands0.c \
+				executor/ft_commands1.c \
+				buildins/ft_env0.c \
+				buildins/ft_env1.c \
+				buildins/ft_env2.c \
+				buildins/ft_export0.c \
+				buildins/ft_export1.c \
+				buildins/ft_unset.c \
+				buildins/ft_pwd.c \
+				buildins/ft_echo.c \
+				buildins/ft_cd.c \
+				executor/ft_executable.c \
+				utils/ft_split.c \
+				executor/ft_pipe.c \
+				executor/ft_redirect0.c \
+				executor/ft_redirect1.c \
+				executor/ft_redirect2.c \
+				utils/ft_get_next_line.c \
+				signals/ft_signals.c \
+				signals/ft_signal_handler.c \
+				buildins/ft_exit.c \
+				bonus/ft_wildcard0.c \
+				bonus/ft_wildcard1.c
 
-OBJ			:=	$(SRC:%.c=%.o)
+#OBJS		:=	$(SRCS:%.c=%.o)
+OBJS		:= $(SRCS:%.c=$(OBJ_FOLDER)/%.o)
 
 CFLAGS		:=	-Wall -Wextra -Werror -g
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L/usr/local/opt/readline/lib -lreadline -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -L/usr/local/opt/readline/lib -lreadline -o $(NAME)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -I/usr/local/opt/readline/include/ -c $< -o $@
+$(OBJS): $(OBJ_FOLDER)/%.o: $(SRC_FOLDER)/%.c
+	@mkdir -p $(@D)
+	$(CC) -c $(CFLAGS) -I/usr/local/opt/readline/include/ -o $@ $<
+
+#%.o: %.c
+#	$(CC) $(CFLAGS) -I/usr/local/opt/readline/include/ -c $< -o $@
 
 
 clean:
-	rm -f $(OBJ)
+	rm -fr $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -fr $(NAME)
 
 re: fclean all
 
 norm:
-	norminette -R CheckForbiddenSourceHeader $(SRC) $(HEADERFILE)
+	cd srcs && norminette -R CheckForbiddenSourceHeader $(SRCS) $(HEADERFILE)
 
+ 	$(SRC_FOLDER)/$(SRCS)
+git:
+#	git add $(SRC_FOLDER)/$(SRCS)
+	git add $(HEADERFILE)
+	git add Makefile
+	
 val:
 	valgrind --leak-check=full --trace-children=yes ./minishell
 
