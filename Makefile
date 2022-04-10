@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
+#    By: ehosu <ehosu@student.42wolfsburg.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/10 10:13:02 by rkaufman         ###   ########.fr        #
+#    Updated: 2022/04/10 11:08:30 by ehosu            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,6 @@ SRCS		:=	ft_minishell.c \
 				bonus/ft_wildcard0.c \
 				bonus/ft_wildcard1.c
 
-#OBJS		:=	$(SRCS:%.c=%.o)
 OBJS		:= $(SRCS:%.c=$(OBJ_FOLDER)/%.o)
 
 CFLAGS		:=	-Wall -Wextra -Werror -g
@@ -75,12 +74,8 @@ $(OBJS): $(OBJ_FOLDER)/%.o: $(SRC_FOLDER)/%.c
 	@mkdir -p $(@D)
 	$(CC) -c $(CFLAGS) -I/usr/local/opt/readline/include/ -o $@ $<
 
-#%.o: %.c
-#	$(CC) $(CFLAGS) -I/usr/local/opt/readline/include/ -c $< -o $@
-
-
 clean:
-	rm -fr $(OBJS)
+	rm -fr $(OBJ_FOLDER)
 
 fclean: clean
 	rm -fr $(NAME)
@@ -88,13 +83,8 @@ fclean: clean
 re: fclean all
 
 norm:
-	cd srcs && norminette -R CheckForbiddenSourceHeader $(SRCS) $(HEADERFILE)
-
- 	$(SRC_FOLDER)/$(SRCS)
-git:
-#	git add $(SRC_FOLDER)/$(SRCS)
-	git add $(HEADERFILE)
-	git add Makefile
+	cd srcs && norminette -R CheckForbiddenSourceHeader $(SRCS)
+	norminette -R CheckForbiddenSourceHeader $(HEADERFILE)
 	
 val:
 	valgrind --leak-check=full --trace-children=yes ./minishell
