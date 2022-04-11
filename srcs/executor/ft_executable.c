@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 20:05:20 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 09:59:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/11 11:04:35 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	ft_do_execve(t_command *cmd, t_data *data)
 		free(cmd_path);
 		return (1);
 	}
+	ft_change_envp(data, ft_realloc("_=", cmd_path, 0, 0));
 	cmd->pid = fork();
 	if (cmd->pid < 0)
 		return (ft_print_error(cmd, errno, NULL));
@@ -45,8 +46,7 @@ void	ft_child_process(t_command *cmd, t_data *data, char *cmd_path)
 
 	ft_set_child_active();
 	ft_connect_pipe(cmd);
-	if (cmd->next)
-		close(cmd->next->fd->in);
+	ft_close_child_fd(cmd, data);
 	envp = ft_create_envp_array(data->envp);
 	argv = ft_create_argv_array(cmd);
 	if (execve(cmd_path, argv, envp) == RETURN_ERROR)

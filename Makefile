@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ehosu <ehosu@student.42wolfsburg.de>       +#+  +:+       +#+         #
+#    By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/18 09:14:26 by rkaufman          #+#    #+#              #
-#    Updated: 2022/04/10 11:08:30 by ehosu            ###   ########.fr        #
+#    Updated: 2022/04/11 09:11:39 by rkaufman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,6 +87,6 @@ norm:
 	norminette -R CheckForbiddenSourceHeader $(HEADERFILE)
 	
 val:
-	valgrind --leak-check=full --trace-children=yes ./minishell
+	valgrind --leak-check=full --trace-children=yes --track-fds=yes -s ./minishell
 
 .PHONY: clean fclean re

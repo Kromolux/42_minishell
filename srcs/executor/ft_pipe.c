@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 09:08:18 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 09:59:59 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/11 09:49:57 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,17 @@ int	ft_close_pipe(t_command *cmd)
 	if (cmd->fd->out != STDOUT_FILENO)
 		close(cmd->fd->out);
 	return (0);
+}
+
+void	ft_close_child_fd(t_command *cmd, t_data *data)
+{
+	t_command	*tmp;
+
+	tmp = data->c_line;
+	while (tmp)
+	{
+		if (tmp != cmd)
+			ft_close_pipe(tmp);
+		tmp = tmp->next;
+	}
 }

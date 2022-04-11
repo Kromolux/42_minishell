@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 07:51:02 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 10:00:41 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/10 12:31:21 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	ft_check_cmd(t_data *data, t_parser *parser)
 	if (parser->token[0] == '|')
 	{
 		parser->cmd->next = ft_create_cmd_elem();
+		parser->cmd->result = RETURN_SUCCESS;
 		parser->cmd = parser->cmd->next;
 		return (RETURN_SUCCESS);
 	}

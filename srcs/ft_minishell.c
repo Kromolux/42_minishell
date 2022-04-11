@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:17:33 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 10:02:05 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/11 09:46:16 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	ft_initialize(t_data *data, char **envp)
 	}
 	else
 		data->pwd = ft_string_dup(tmp_envp->var);
+	ft_change_envp(data, "SHELL=EDUARDS & RENES MINISHELL!");
 }
 
 int	ft_cycle_cmd(t_data *data)

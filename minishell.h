@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 09:16:03 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/09 20:45:10 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/11 09:49:34 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,7 @@ int				ft_cd(t_data *data, t_command *cmd);
 int				ft_create_pipe(t_command *cmd);
 int				ft_connect_pipe(t_command *cmd);
 int				ft_close_pipe(t_command *cmd);
+void			ft_close_child_fd(t_command *cmd, t_data *data);
 
 //ft_executable.c
 int				ft_do_execve(t_command *cmd, t_data *data);

@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 11:12:11 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 09:57:56 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/11 10:08:03 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	ft_cd(t_data *data, t_command *cmd)
 		return (RETURN_ERROR);
 	if (lstat(cmd->argv->var, &path_check) == RETURN_ERROR)
 		return (ft_print_error(cmd, ERR_CD_FOLDER, cmd->argv->var));
+	cmd->errnum = 0;
 	if (cmd == data->c_line)
 	{
 		chdir(cmd->argv->var);
@@ -59,6 +60,8 @@ static void	ft_cd_relative_path(t_data *data, t_command *cmd)
 	struct stat	path_check;
 
 	i = 0;
+	if (ft_strcmp(cmd->argv->var, ".") == 1)
+		return ;
 	new_path = ft_split(cmd->argv->var, '/');
 	while (new_path[i])
 	{
@@ -74,7 +77,6 @@ static void	ft_cd_relative_path(t_data *data, t_command *cmd)
 		i++;
 	}
 	ft_free_char_array(new_path);
-	cmd->errnum = 0;
 }
 
 static char	*ft_cd_add_folder(char *path, char *folder)

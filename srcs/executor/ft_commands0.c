@@ -6,7 +6,7 @@
 /*   By: rkaufman <rkaufman@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 18:13:01 by rkaufman          #+#    #+#             */
-/*   Updated: 2022/04/10 09:59:50 by rkaufman         ###   ########.fr       */
+/*   Updated: 2022/04/10 12:28:22 by rkaufman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_command	*ft_create_cmd_elem(void)
 	output->fd->in = STDIN_FILENO;
 	output->fd->out = STDOUT_FILENO;
 	output->fd->err = STDERR_FILENO;
-	output->result = RETURN_SUCCESS;
+	output->result = RETURN_FALSE;
 	output->re = NULL;
 	return (output);
 }
